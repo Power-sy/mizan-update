@@ -73,6 +73,7 @@ input:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-of
 .hr{display:grid;grid-template-columns:1fr auto;gap:2px 10px;width:100%;text-align:start;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 2px;font:inherit;color:var(--ink);cursor:pointer}
 .hr *{pointer-events:none}
 .hr.on{background:var(--accbg)}
+.hrw{display:flex;align-items:center;gap:8px}.hrw .hr{flex:1}.hck{display:flex;align-items:center;padding:6px}.hck input{width:22px;height:22px;accent-color:#0f7b5f}
 .hm{font-weight:700}.hn{font-weight:800}
 .hb{grid-column:1/-1;height:5px;border-radius:4px;background:var(--line);overflow:hidden}
 .hb i{display:block;height:100%;background:var(--acc)}.hb i.neg{background:var(--neg)}
@@ -193,10 +194,10 @@ details pre{white-space:pre-wrap;direction:ltr;text-align:left;font-size:.75rem;
 .danger{width:100%;border:1px solid rgba(225,85,110,.5);background:rgba(225,85,110,.1);color:#b3402a;border-radius:12px;padding:14px;font:inherit;font-weight:700;cursor:pointer;margin-top:10px}
 </style>
 
-<meta name="mz-version" content="5">
+<meta name="mz-version" content="6">
 <script>
 (function(){
-var BV=5,LS=window.localStorage,DEF='https://raw.githubusercontent.com/Power-sy/mizan-update/main/index.html';
+var BV=6,LS=window.localStorage,DEF='https://raw.githubusercontent.com/Power-sy/mizan-update/main/index.html';
 function gv(k){try{return LS.getItem(k)||''}catch(e){return ''}}
 function sv(k,v){try{LS.setItem(k,v)}catch(e){}}
 window.__mzDef=DEF;
@@ -538,7 +539,7 @@ function lhist(){
   if(!ks.length){h.innerHTML='<div class="hint">'+t('l_empty')+'</div>';$('lstats').textContent='';return}
   var sk=fcSelKeys(),tot=0,mx=1,cnt=ks.filter(function(k){return k<=curKey()&&!isExcl(k)}).length;
   var rows=ks.map(function(k){var m=S.log[k],i=sum(m.income),e=sum(m.expense),n=i-e;if(k<=curKey()&&!isExcl(k))tot+=n;mx=Math.max(mx,Math.abs(n));return{k:k,i:i,e:e,n:n}});
-  h.innerHTML=rows.map(function(r){return '<button class="hr'+(r.k===cm?' on':'')+'" data-open="'+r.k+'"><span class="hm">'+mlabel(r.k)+(isExcl(r.k)?' <small class="hint">'+t('l_exl')+'</small>':'')+(sk.indexOf(r.k)>=0?' <small class="pos">✓</small>':'')+'</span><span class="hn num '+(r.n>=0?'pos':'neg')+'">'+fmt(r.n)+'</span><span class="hb"><i class="'+(r.n<0?'neg':'')+'" style="width:'+Math.round(Math.abs(r.n)/mx*100)+'%"></i></span><span class="hd num">'+fmt(r.i)+' ↑ · '+fmt(r.e)+' ↓</span></button>'}).join('');
+  h.innerHTML='<div class="hint" style="margin-bottom:6px">'+t('l_selhint')+'</div>'+rows.map(function(r){return '<div class="hrw"><label class="hck"><input type="checkbox" data-selm="'+r.k+'"'+(sk.indexOf(r.k)>=0?' checked':'')+'></label><button class="hr'+(r.k===cm?' on':'')+'" data-open="'+r.k+'"><span class="hm">'+mlabel(r.k)+(isExcl(r.k)?' <small class="hint">'+t('l_exl')+'</small>':'')+'</span><span class="hn num '+(r.n>=0?'pos':'neg')+'">'+fmt(r.n)+'</span><span class="hb"><i class="'+(r.n<0?'neg':'')+'" style="width:'+Math.round(Math.abs(r.n)/mx*100)+'%"></i></span><span class="hd num">'+fmt(r.i)+' ↑ · '+fmt(r.e)+' ↓</span></button></div>'}).join('');
   $('lstats').textContent=t('l_total')+': '+fmt(tot)+'  |  '+t('l_avg')+': '+fmt(cnt?tot/cnt:0);
 }
 function logKeys(){var n=new Date(),ck=n.getFullYear()+'-'+('0'+(n.getMonth()+1)).slice(-2);return Object.keys(S.log).filter(function(k){var m=S.log[k];return k<=ck&&(m.income.length||m.expense.length)&&!isExcl(k)}).sort()}
@@ -705,7 +706,8 @@ function homeRender(){
   var ks=allKeys(),h=pgHead('home'),pend=(S.pend||[]).length;
   if(pend)h+='<button class="pend" data-go="more">🔔 '+t('h_pend').replace('{n}',pend)+'</button>';
   var m1=S.log[cm]||{income:[],expense:[]},net1=sum(m1.income)-sum(m1.expense),fcc=fcCalc();
-  h+='<div class="kt"><div class="k k2"><small>'+t('h_net1')+' '+mlabel(cm)+'</small><b class="num">'+fmt(net1)+'</b></div><div class="k k1"><small>'+t('h_now')+'</small><b class="num">'+fmt(now)+'</b></div><div class="k k3"><small>'+t('h_end')+' ('+fcc.months+' '+unitAcc(fcc.months)+')</small><b class="num">'+fmt(fcc.end)+'</b>'+(fcc.selN?'<span class="eq num">'+fmt(fcc.base)+' + '+fmt(fcc.sel)+'</span>':'')+'</div></div>';
+  var sk0=fcSelKeys(),selLab=sk0.length===1?t('h_net1')+' '+mlabel(sk0[0]):t('h_netm')+' ('+sk0.length+')',selNames=sk0.length>1?'<span class="eq">'+sk0.map(function(k){return mlabel(k)}).join(L3('، ',', ',', '))+'</span>':'';
+  h+='<div class="kt"><div class="k k2"><small>'+selLab+'</small><b class="num">'+fmt(fcc.sel)+'</b>'+selNames+'</div><div class="k k1"><small>'+t('h_now')+'</small><b class="num">'+fmt(now)+'</b></div><div class="k k3"><small>'+t('h_end')+' ('+(S.lang==='ar'&&fcc.selN<3?(fcc.selN===1?'شهر واحد':'شهران'):fcc.selN+' '+unitAcc(fcc.selN))+')</small><b class="num">'+fmt(fcc.end)+'</b>'+(fcc.selN?'<span class="eq num">'+fmt(fcc.base)+' + '+fmt(fcc.sel)+'</span>':'')+'</div></div>';
   if(fcc.show)h+='<section class="box an1"><h2>'+t('fc_title')+'</h2><ul class="sum"><li><span>'+t('fc_tinc')+'</span><span class="num">'+fmt(fcc.incT)+'</span></li><li><span>'+t('fc_texp')+'</span><span class="num">'+fmt(fcc.expT)+'</span></li>'+(fcc.selN?'<li><span>'+t('fc_selt')+'</span><span class="num">'+fmt(fcc.sel)+'</span></li>':'')+'<li class="fin"><span>'+t('fc_net')+'</span><span class="num">'+fmt(fcc.net)+'</span></li></ul><div class="hint" style="margin-top:6px">'+t('fc_note')+'</div></section>';
   if(!ks.length){el.innerHTML=h+'<section class="box an1"><div class="hint">'+t('h_none')+'</div></section>';return}
   var cf=ks.slice(-6),mx=1;
@@ -906,15 +908,20 @@ Object.assign(T.en,{"fc_sel": "Add this month's net to the expected balance", "f
 Object.assign(T.ar,{"sub": "إدارة أموالك بتوازن", "fc_sel": "إضافة صافي الشهر المحدد إلى الرصيد المتوقع", "up_title": "تحديث التطبيق", "up_desc": "يتحقق التطبيق تلقائيًا من وجود تحديث عند الفتح، ويُطبَّق دون حذف التطبيق أو فقدان بياناتك.", "up_ver": "رقم الإصدار الحالي", "up_check": "التحقق من التحديث الآن", "up_new": "يتوفر تحديث جديد", "up_now": "تحديث الآن", "up_latest": "أنت على أحدث إصدار", "up_err": "تعذّر الاتصال بخادم التحديث", "up_bad": "ملف التحديث غير صالح", "up_nourl": "أدخل رابط التحديث أولًا"});
 Object.assign(T.de,{"sub": "Verwalte dein Geld im Gleichgewicht", "fc_sel": "Netto des gewählten Monats zum erwarteten Stand addieren", "up_title": "App-Update", "up_desc": "Die App prüft beim Öffnen automatisch auf Updates. Sie werden ohne Neuinstallation und ohne Datenverlust übernommen.", "up_ver": "Aktuelle Version", "up_check": "Jetzt nach Update suchen", "up_new": "Neues Update verfügbar", "up_now": "Jetzt aktualisieren", "up_latest": "Du hast die neueste Version", "up_err": "Update-Server nicht erreichbar", "up_bad": "Update-Datei ungültig", "up_nourl": "Bitte zuerst die Update-URL eingeben"});
 Object.assign(T.en,{"sub": "Manage your money in balance", "fc_sel": "Add the selected month's net to the expected balance", "up_title": "App update", "up_desc": "The app checks for updates automatically when opened. Updates apply without reinstalling and without losing your data.", "up_ver": "Current version", "up_check": "Check for update now", "up_new": "A new update is available", "up_now": "Update now", "up_latest": "You have the latest version", "up_err": "Could not reach the update server", "up_bad": "Invalid update file", "up_nourl": "Enter the update URL first"});
+Object.assign(T.ar,{"h_netm": "صافي الأشهر المحددة", "l_selhint": "ضع علامة ✓ على الشهر أو الأشهر التي تريد جمع صافيها وإضافته إلى الرصيد المتوقع.", "fc_sel": "تحديد هذا الشهر (يُضاف صافيه إلى الرصيد المتوقع)"});
+Object.assign(T.de,{"h_netm": "Netto der gewählten Monate", "l_selhint": "Hake einen oder mehrere Monate an, deren Netto zum erwarteten Stand addiert werden soll.", "fc_sel": "Diesen Monat auswählen (sein Netto wird zum erwarteten Stand addiert)"});
+Object.assign(T.en,{"h_netm": "Net of selected months", "l_selhint": "Tick one or more months to add their net to the expected balance.", "fc_sel": "Select this month (its net is added to the expected balance)"});
 function pgHead(k){return '<div class="pgh"><h2>'+t('tt_'+k)+'</h2><p>'+t('td_'+k)+'</p></div>'}
 
 /* ---- Forecast of the coming months (lives in the log tab, feeds the home tiles) ---- */
-function fcGet(){var f=S.fc||{};return{months:Math.max(1,Math.round(num(f.months)||4)),inc:(f.inc===undefined||f.inc==='')?incPlan():num(f.inc),exp:(f.exp===undefined||f.exp==='')?expPlan():num(f.exp),show:!!f.show,incl:f.incl!==false}}
-function fcSelHas(k){var s=(S.fc&&S.fc.sel)||{};return s[k]===undefined?k===cm:!!s[k]}
-function fcSelKeys(){var s=(S.fc&&S.fc.sel)||{},lk=linked()?linkKeys():[],c={};Object.keys(s).forEach(function(k){c[k]=1});c[cm]=1;return Object.keys(c).filter(function(k){var m=S.log[k];return fcSelHas(k)&&m&&(m.income.length||m.expense.length)&&lk.indexOf(k)<0}).sort()}
+function fcGet(){var f=S.fc||{};return{months:Math.max(1,Math.round(num(f.months)||4)),inc:(f.inc===undefined||f.inc==='')?incPlan():num(f.inc),exp:(f.exp===undefined||f.exp==='')?expPlan():num(f.exp),show:!!f.show,incl:f.incl2===true}}
+function selRaw(){if(!S.selSet)return [cm];return Object.keys(S.selSet).filter(function(k){return S.selSet[k]})}
+function fcSelHas(k){return selRaw().indexOf(k)>=0}
+function fcSelKeys(){var lk=linked()?linkKeys():[];return selRaw().filter(function(k){var m=S.log[k];return m&&(m.income.length||m.expense.length)&&lk.indexOf(k)<0}).sort()}
+function toggleSel(k,on){if(!S.selSet){S.selSet={};S.selSet[cm]=true}S.selSet[k]=on===undefined?!S.selSet[k]:!!on;save()}
 function fcSelNet(){return fcSelKeys().reduce(function(a,k){var m=S.log[k];return a+sum(m.income)-sum(m.expense)},0)}
 function fcCalc(){var f=fcGet(),now=sum(S.assets)+linkNet(),net=(f.inc-f.exp)*f.months,sel=fcSelNet();return{months:f.months,inc:f.inc,exp:f.exp,incT:f.inc*f.months,expT:f.exp*f.months,net:net,now:now,sel:sel,selN:fcSelKeys().length,base:now+(f.incl?net:0),end:now+sel+(f.incl?net:0),show:f.show,incl:f.incl}}
-function fcUi(){var c=fcCalc();$('fcTInc').textContent=fmt(c.incT);$('fcTExp').textContent=fmt(c.expT);$('fcNet').textContent=fmt(c.net);$('fcEnd').textContent=fmt(c.end);$('fcSel').textContent=fmt(c.sel);var sm=$('fcSelM'),sl=$('fcSelL');if(sm){sm.checked=fcSelHas(cm);var mm=S.log[cm]||{income:[],expense:[]};sl.textContent=t('fc_sel')+' ('+mlabel(cm)+': '+fmt(sum(mm.income)-sum(mm.expense))+')'}}
+function fcUi(){var c=fcCalc();$('fcTInc').textContent=fmt(c.incT);$('fcTExp').textContent=fmt(c.expT);$('fcNet').textContent=fmt(c.net);$('fcEnd').textContent=fmt(c.end);$('fcSel').textContent=fmt(c.sel);var sm=$('fcSelM'),sl=$('fcSelL');if(sm){sm.checked=fcSelHas(cm);var mm=S.log[cm]||{income:[],expense:[]};sl.textContent=t('fc_sel')+' — '+mlabel(cm)+': '+fmt(sum(mm.income)-sum(mm.expense))}}
 function fcSync(){var f=fcGet();$('fcM').value=String(f.months);$('fcInc').value=f.inc||'';$('fcExp').value=f.exp||'';$('fcShow').checked=f.show;$('fcIncl').checked=f.incl;fcUi()}
 
 /* ---- Plan tab: goal progress + balance chart ---- */
@@ -958,8 +965,9 @@ document.addEventListener('input',function(e){
 document.addEventListener('change',function(e){
   var x=e.target;
   if(x.id==='fcM'){S.fc=S.fc||{};S.fc.months=num(x.value);save();fcUi()}
-  else if(x.id==='fcSelM'){S.fc=S.fc||{};S.fc.sel=S.fc.sel||{};S.fc.sel[cm]=!!x.checked;save();fcUi();lhist()}
-  else if(x.id==='fcShow'||x.id==='fcIncl'){S.fc=S.fc||{};S.fc[x.id==='fcShow'?'show':'incl']=x.checked;save();fcUi()}
+  else if(x.id==='fcSelM'){toggleSel(cm,!!x.checked);fcUi();lhist()}
+  else if(x.dataset&&x.dataset.selm){toggleSel(x.dataset.selm,!!x.checked);fcUi();lhist()}
+  else if(x.id==='fcShow'||x.id==='fcIncl'){S.fc=S.fc||{};S.fc[x.id==='fcShow'?'show':'incl2']=x.checked;save();fcUi()}
   else if(x.id&&x.id.indexOf('asel-')===0){var k=x.id.slice(5);$('aname-'+k).hidden=x.value!=='custom';if(x.value==='custom')$('aname-'+k).placeholder=t(k==='income'?'ph_income':'ph_expense')}
   else if(x.id==='mzCur'){S.cur=x.value;try{$('cur').value=S.cur}catch(er){}save();applyLang()}
   else if(x.id==='mzLang'){S.lang=(['de','en'].indexOf(x.value)>=0?x.value:'ar');save();applyLang()}
