@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ميزان</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
+<style>
+:root{--bg:#eceef1;--card:#fff;--ink:#14302b;--muted:#5d7570;--line:#d5e0dc;--acc:#0f7b5f;--accbg:#dff1ea;--neg:#b3402a;--negbg:#f8e4de;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a17;--card:#162622;--ink:#e6f2ee;--muted:#93aba5;--line:#2a3f39;--acc:#4cc9a0;--accbg:#173a2f;--neg:#ff8d73;--negbg:#3b201a}}
+:root[data-theme="dark"]{--bg:#0e1a17;--card:#162622;--ink:#e6f2ee;--muted:#93aba5;--line:#2a3f39;--acc:#4cc9a0;--accbg:#173a2f;--neg:#ff8d73;--negbg:#3b201a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;line-height:1.6}
+main{max-width:640px;margin:0 auto;padding:16px 14px 40px}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+h1{font-size:1.5rem;margin:8px 0 2px;font-weight:800}
+.k .eq{display:block;font-size:.72rem;color:var(--muted);margin-top:2px;font-weight:600;direction:ltr}
+.langcol{display:flex;flex-direction:column;align-items:center;flex:none;margin-top:10px}.langcol .lang{margin-top:0}.tdate{font-size:.74rem;color:var(--muted);margin-top:6px;text-align:center;max-width:170px;line-height:1.35}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card);flex:none;margin-top:10px}
+.lang button{border:0;background:none;color:var(--muted);font:inherit;font-size:.85rem;padding:6px 11px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg);font-weight:700}
+.sub{color:var(--muted);margin:0 0 14px;font-size:.95rem}
+.num{direction:ltr}
+html[dir="rtl"] .num{text-align:right}
+html[dir="ltr"] .num{text-align:left}
+.endhero{background:linear-gradient(135deg,#22a97d,#0f7b5f);color:#fff;border-radius:20px;padding:20px 18px;margin-bottom:12px;box-shadow:0 6px 18px rgba(15,123,95,.3)}
+.endhero small{font-size:1rem;font-weight:700;opacity:.85;display:block}
+.endhero .big{font-size:3.2rem;font-weight:800;line-height:1.15;margin:4px 0 6px}
+.endhero .sub2{font-size:.9rem;opacity:.8}
+.endhero.bad{background:linear-gradient(135deg,#f3a08c,#e0634a)}
+.hero{background:var(--ink);color:var(--bg);border-radius:18px;padding:18px;margin-bottom:14px}
+.hero small{opacity:.75;font-size:.95rem}
+.hero .big{font-size:2.3rem;font-weight:800;line-height:1.2;margin:2px 0 10px}
+.hero .big.neg{color:#ff9d84}
+.bar{height:10px;border-radius:6px;background:rgba(255,255,255,.2);overflow:hidden}
+.bar i{display:block;height:100%;background:#5fe0b5;width:0;transition:width .3s}
+.bar-l{display:flex;justify-content:space-between;gap:8px;font-size:.85rem;opacity:.8;margin-top:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat small{color:var(--muted);display:block;font-size:.85rem}
+.stat b{font-size:1.15rem;display:block}
+.pos{color:var(--acc)}.neg{color:var(--neg)}
+section.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.box h2{font-size:1.05rem;margin:0 0 2px}
+.box .tot{color:var(--muted);font-size:.9rem;margin-bottom:8px}
+.row{display:flex;gap:8px;margin-bottom:8px}
+input{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;min-width:0}
+input:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.row .n{flex:1.4}.row .v{flex:1}
+.x{background:none;border:1px solid var(--line);color:var(--muted);border-radius:10px;width:40px;font-size:1.1rem;cursor:pointer}
+.add{background:var(--accbg);color:var(--acc);border:0;border-radius:10px;padding:9px 14px;font:inherit;font-weight:700;cursor:pointer}
+.set{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.set label{font-size:.85rem;color:var(--muted);display:block}
+.set input{width:100%}
+.note{padding:10px 12px;border-radius:10px;font-size:.92rem;margin-top:10px}
+.note.ok{background:var(--accbg);color:var(--acc)}.note.bad{background:var(--negbg);color:var(--neg)}
+.foot{display:flex;gap:8px;justify-content:space-between;margin-top:6px}
+.ghost{background:none;border:1px solid var(--line);color:var(--muted);border-radius:10px;padding:8px 12px;font:inherit;cursor:pointer}
+.sum{list-style:none;margin:8px 0 0;padding:0}
+.sum li{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.sum li span:last-child{direction:ltr;font-weight:700;white-space:nowrap}
+.sum li.fin{border-bottom:0;border-top:2px solid var(--ink);margin-top:2px;padding-top:12px;font-size:1.15rem;font-weight:800}
+.sum li.sub{padding-inline-start:14px;color:var(--muted)}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;margin:6px 0 14px}
+.tabs button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-weight:700;padding:10px;border-radius:10px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.mrow{display:flex;gap:8px;align-items:center}
+.mrow input{flex:1;text-align:center}
+.mlabel{font-size:1.2rem;font-weight:800;margin:10px 0 2px}
+.hint{color:var(--muted);font-size:.85rem}
+.hr{display:grid;grid-template-columns:1fr auto;gap:2px 10px;width:100%;text-align:start;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 2px;font:inherit;color:var(--ink);cursor:pointer}
+.hr *{pointer-events:none}
+.hr.on{background:var(--accbg)}
+.hm{font-weight:700}.hn{font-weight:800}
+.hb{grid-column:1/-1;height:5px;border-radius:4px;background:var(--line);overflow:hidden}
+.hb i{display:block;height:100%;background:var(--acc)}.hb i.neg{background:var(--neg)}
+.hd{grid-column:1/-1;color:var(--muted);font-size:.82rem}
+.chk{display:flex;gap:8px;align-items:flex-start;margin:4px 0 8px;font-size:.95rem}
+.chk input{width:20px;height:20px;padding:0;flex:none;margin-top:3px;accent-color:var(--acc)}
+select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;min-width:0;max-width:100%}
+select:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.row .n:only-child{flex:1}
+.resbox{background:linear-gradient(135deg,#e9f0ff,#dce6ff);border:1px solid #b6c8f3;color:#1b2f5e}
+.resbox .hint{color:inherit;opacity:.8;margin-bottom:6px}
+.resbox .sum li{border-bottom-color:rgba(27,47,94,.18)}
+.resbox .sum li.fin{border-top-color:currentColor}
+.resbox .add{background:#fff;color:#1d4ed8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .resbox{background:linear-gradient(135deg,#1b2a4a,#16233f);border-color:#2d4478;color:#dbe6ff}:root:not([data-theme="light"]) .resbox .sum li{border-bottom-color:rgba(219,230,255,.2)}:root:not([data-theme="light"]) .resbox .add{background:#223559;color:#9db9ff}}
+.hero{background:rgba(99,102,241,.12);color:var(--ink);border:1px solid rgba(99,102,241,.3)}
+.hero .big.neg{color:#d6455c}
+.bar{background:rgba(99,102,241,.2)}.bar i{background:#6366f1}
+#tab-plan .grid .stat:nth-child(1){background:rgba(13,148,136,.12);border-color:rgba(13,148,136,.3)}
+#tab-plan .grid .stat:nth-child(2){background:rgba(34,160,98,.12);border-color:rgba(34,160,98,.3)}
+#tab-plan .grid .stat:nth-child(3){background:rgba(217,140,31,.12);border-color:rgba(217,140,31,.32)}
+#tab-log .grid .stat:nth-child(1){background:rgba(34,160,98,.12);border-color:rgba(34,160,98,.3)}
+#tab-log .grid .stat:nth-child(2){background:rgba(225,85,110,.1);border-color:rgba(225,85,110,.3)}
+#tab-log .grid .stat:nth-child(3){background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.3)}
+#b-set,#b-month{background:rgba(139,92,246,.09);border-color:rgba(139,92,246,.26)}
+#b-assets{background:rgba(13,148,136,.09);border-color:rgba(13,148,136,.26)}
+#b-linc{background:rgba(34,160,98,.08);border-color:rgba(34,160,98,.26)}
+#b-lexp{background:rgba(225,85,110,.07);border-color:rgba(225,85,110,.26)}
+#b-link{background:rgba(14,165,233,.09);border-color:rgba(14,165,233,.28)}
+#b-hist{background:rgba(100,116,139,.09);border-color:rgba(100,116,139,.26)}
+.kt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.k{border-radius:14px;padding:12px 10px;border:1px solid transparent}
+.k small{display:block;font-size:.78rem;color:var(--muted);line-height:1.3;min-height:2.6em}
+.k b{font-size:1.35rem;display:block}
+.k1{background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.3)}.k1 b{color:#3b78d8}
+.k2{background:rgba(229,154,61,.14);border-color:rgba(229,154,61,.35)}.k2 b{color:#cf7f1f}
+.k3{background:rgba(53,176,127,.13);border-color:rgba(53,176,127,.32)}.k3 b{color:#1f9d6c}
+.stk{display:flex;height:16px;border-radius:9px;overflow:hidden;background:var(--line);margin:8px 0}
+.stk i{display:block;height:100%}
+.lg{display:flex;flex-wrap:wrap;gap:12px;font-size:.88rem;margin-bottom:6px}
+.lg b{display:inline-block;width:10px;height:10px;border-radius:50%;margin-inline-end:5px}
+.ar{margin:10px 0}.at{display:flex;justify-content:space-between;gap:8px;font-size:.93rem}
+.ab{display:block;height:8px;border-radius:5px;background:var(--line);overflow:hidden;margin-top:4px}.ab i{display:block;height:100%;border-radius:5px}
+.as{font-size:.8rem;color:var(--muted)}
+.an1{background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.25)}
+.an2{background:rgba(34,160,98,.08);border-color:rgba(34,160,98,.25)}
+.an3{background:rgba(225,85,110,.07);border-color:rgba(225,85,110,.25)}
+.tr{display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;align-items:center;padding:9px 10px;border-radius:10px;margin-bottom:6px;background:rgba(100,116,139,.08)}
+.tr.sal{background:rgba(34,160,98,.11)}.tr.end{background:rgba(99,102,241,.13);font-weight:700}
+.td{font-size:.85rem;color:var(--muted);white-space:nowrap;direction:ltr}
+.tx small{display:block;color:var(--muted);font-size:.8rem;font-weight:400}
+.tv{font-weight:800;white-space:nowrap}
+#b-tl{background:rgba(14,165,233,.07);border-color:rgba(14,165,233,.25)}
+.brand{display:flex;align-items:center;gap:10px}.brand svg{width:40px;height:40px;flex:none}
+.tabs button{font-size:.84rem;padding:10px 2px}
+.pend{display:block;width:100%;text-align:start;border:1px solid rgba(217,140,31,.4);background:rgba(217,140,31,.14);color:var(--ink);border-radius:12px;padding:11px 12px;margin-bottom:12px;font:inherit;cursor:pointer}
+.cf{display:flex;align-items:flex-end;gap:8px;height:150px;margin-top:10px}
+.cfc{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px}
+.cfb{display:flex;align-items:flex-end;gap:3px;width:100%;height:calc(100% - 20px);justify-content:center}
+.cfb i{display:block;width:42%;max-width:22px;border-radius:5px 5px 2px 2px;min-height:2px}
+.cfb .ci{background:#35b07f}.cfb .ce{background:#e5667a}
+.cfc small{font-size:.72rem;color:var(--muted)}
+.cfc.dim{opacity:.45}
+.dn{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px}
+.donut{position:relative;width:150px;height:150px;border-radius:50%;flex:none}
+.donut::after{content:'';position:absolute;inset:28px;background:var(--card);border-radius:50%}
+.donut b{position:absolute;inset:0;display:grid;place-items:center;z-index:1;font-size:.85rem;text-align:center;direction:ltr}
+.lgd{flex:1;min-width:150px}
+.lgd div{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;padding:3px 0}
+.lgd i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-inline-end:6px}
+.tp{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.93rem}.tp:last-child{border:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{display:inline-flex;align-items:center;gap:4px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);border-radius:999px;padding:3px 6px 3px 10px;font-size:.85rem}
+.chip button{border:0;background:none;color:var(--muted);cursor:pointer;font:inherit;padding:0 4px}
+.pc{border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0;background:rgba(217,140,31,.07)}
+.pt{font-size:.92rem;margin-bottom:4px;word-break:break-word}.pm{color:var(--muted);font-size:.78rem;margin-bottom:6px}
+.pr{display:flex;gap:8px;margin:6px 0;flex-wrap:wrap}.pr>*{flex:1;min-width:0}
+.mz-in{width:100%;margin:4px 0}
+.mzta{width:100%;min-height:90px;font:inherit;font-size:.8rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px;direction:ltr;text-align:left}
+#mzToast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:90%;font-size:.9rem}
+#mzToast.show{opacity:1;transform:translateX(-50%)}
+.mzbox-n{background:rgba(217,140,31,.07);border-color:rgba(217,140,31,.26)}
+.mzbox-b{background:rgba(59,130,246,.07);border-color:rgba(59,130,246,.25)}
+.mzbox-s{background:rgba(139,92,246,.07);border-color:rgba(139,92,246,.25)}
+details pre{white-space:pre-wrap;direction:ltr;text-align:left;font-size:.75rem;background:var(--bg);padding:8px;border-radius:8px;overflow:auto}
+.tabs{overflow-x:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:1 0 auto;white-space:nowrap;padding:10px 12px;font-size:.9rem}
+.pgh h2{font-size:1.3rem;margin:6px 0 2px}.pgh p{color:var(--muted);margin:0 0 12px;font-size:.92rem}
+.k4{background:rgba(225,85,110,.1);border-color:rgba(225,85,110,.3)}.k4 b{color:#d6455c}
+.k small{min-height:2.6em}
+.lh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.lh h2{margin:0;font-size:1.1rem}.lh b{font-size:1.05rem}
+.li .lh b{color:#1f9d6c}.lr .lh b{color:#d6455c}
+.ic{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;border-inline-start:4px solid var(--line)}
+.ic .sg{font-size:1.2rem;color:var(--muted);flex:none;width:16px;text-align:center}
+.ic .lb{flex:1;min-width:0;text-align:start}.ic .lb b{display:block;font-size:.98rem}.ic .lb small{color:var(--muted);font-size:.78rem}
+.ic .am{display:flex;align-items:center;gap:2px;direction:ltr}
+.ic .am input{width:86px;border:0;background:transparent;font:inherit;font-weight:800;text-align:end;padding:4px}
+.li .ic .am,.li .ic .am input{color:#1f9d6c}.lr .ic .am,.lr .ic .am input{color:#d6455c}
+.ic .cn{width:100%;border:0;background:transparent;font:inherit;font-weight:700;padding:2px 0}
+.addr{display:flex;gap:8px;margin:10px 0 8px}.addr .aamt{width:34%}.addr .sel{flex:1;min-width:0}
+.aname{width:100%;margin-bottom:8px}
+.add2{width:100%;border:0;border-radius:12px;padding:13px;font:inherit;font-weight:700;color:#fff;cursor:pointer}.add2.g{background:#0f8b6c}.add2.r{background:#c5586a}
+.fl{display:block;font-size:.85rem;color:var(--muted);margin:10px 0 4px}.w{width:100%}
+.endhero .bar{background:rgba(255,255,255,.28);margin-top:10px}.endhero .bar i{background:#e7ffc9}
+#b-chart{background:rgba(31,157,108,.06);border-color:rgba(31,157,108,.22)}
+#b-fc{background:rgba(99,102,241,.07);border-color:rgba(99,102,241,.25)}
+#b-lsum{background:rgba(100,116,139,.07);border-color:rgba(100,116,139,.25)}
+#b-fc .grid{margin-top:12px}
+#b-fc .grid .stat:nth-child(1){background:rgba(34,160,98,.12);border-color:rgba(34,160,98,.3)}
+#b-fc .grid .stat:nth-child(2){background:rgba(225,85,110,.1);border-color:rgba(225,85,110,.3)}
+#b-fc .grid .stat:nth-child(3){background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.3)}
+#b-fc .grid .stat:nth-child(4){background:rgba(217,140,31,.12);border-color:rgba(217,140,31,.32)}
+.mzbox-g{background:rgba(13,148,136,.07);border-color:rgba(13,148,136,.25)}
+.srow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.srow:last-of-type{border-bottom:0}
+.srow h3{margin:0;font-size:1rem}.srow p{margin:2px 0 0;color:var(--muted);font-size:.85rem}
+.srow .sel{min-width:130px}
+.sdot{color:#0f8b6c;font-weight:700;white-space:nowrap}
+.danger{width:100%;border:1px solid rgba(225,85,110,.5);background:rgba(225,85,110,.1);color:#b3402a;border-radius:12px;padding:14px;font:inherit;font-weight:700;cursor:pointer;margin-top:10px}
+</style>
+
+<meta name="mz-version" content="4">
+<script>
+(function(){
+var BV=4,LS=window.localStorage,DEF='';
+function gv(k){try{return LS.getItem(k)||''}catch(e){return ''}}
+function sv(k,v){try{LS.setItem(k,v)}catch(e){}}
+window.__mzDef=DEF;
+if(!window.__mzBoot){
+  window.__mzBoot=1;
+  var cv=parseInt(gv('mz_up_ver'))||0,ch=gv('mz_up_html');
+  if(ch&&cv>BV){
+    if(gv('mz_up_try')==='1'){try{LS.removeItem('mz_up_html');LS.removeItem('mz_up_ver');LS.removeItem('mz_up_try')}catch(e){}}
+    else{sv('mz_up_try','1');window.__mzCur=cv;document.open();document.write(ch);document.close();return}
+  }
+}
+window.__mzCur=window.__mzCur||BV;
+})();
+</script>
+</head>
+<body>
+<main>
+<div class="top">
+  <div><h1 class="brand"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#17946e"/><rect x="170" y="388" width="172" height="24" rx="12" fill="#fff"/><rect x="244" y="150" width="24" height="248" rx="12" fill="#fff"/><rect x="92" y="130" width="328" height="22" rx="11" fill="#fff"/><circle cx="256" cy="141" r="24" fill="#fff"/><circle cx="256" cy="141" r="9" fill="#0f7b5f"/><g stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"><path d="M110 150 L72 266 M110 150 L148 266"/><path d="M402 150 L364 266 M402 150 L440 266"/></g><path d="M60 266 H160 Q160 318 110 318 Q60 318 60 266 Z" fill="#fff"/><path d="M352 266 H452 Q452 318 402 318 Q352 318 352 266 Z" fill="#fff"/><circle cx="110" cy="240" r="25" fill="#f5b52e"/><g fill="#c9f5e3"><rect x="378" y="236" width="14" height="30" rx="4"/><rect x="397" y="222" width="14" height="44" rx="4"/><rect x="416" y="246" width="14" height="20" rx="4"/></g></svg><span data-t="title"></span></h1><p class="sub" data-t="sub"></p></div>
+  <div class="langcol"><div class="lang" role="group" aria-label="Language / اللغة">
+    <button data-lang="ar" aria-pressed="true">العربية</button>
+    <button data-lang="en" aria-pressed="false">English</button>
+    <button data-lang="de" aria-pressed="false">Deutsch</button>
+  </div><div class="tdate" id="todayDate"></div></div>
+</div>
+
+<div class="tabs" role="group">
+  <button data-tab="home" data-t="tab_home" aria-pressed="true"></button>
+  <button data-tab="log" data-t="tab_log" aria-pressed="false"></button>
+  <button data-tab="plan" data-t="tab_plan" aria-pressed="false"></button>
+  <button data-tab="more" data-t="tab_more" aria-pressed="false"></button>
+</div>
+
+<div id="tab-home"></div>
+<div id="tab-more" hidden></div>
+
+<div id="tab-plan" hidden>
+<div class="pgh"><h2 data-t="tt_plan"></h2><p data-t="td_plan"></p></div>
+<div class="endhero" id="endhero">
+  <small data-t="endl"></small>
+  <div class="big num" id="sEnd">0</div>
+  <div class="sub2" id="endsub"></div>
+  <div class="bar" id="gwrap" hidden><i id="gbar"></i></div>
+  <div class="sub2" id="gtxt" style="margin-top:6px"></div>
+</div>
+<section class="box" id="b-chart"><h2 data-t="ch_title"></h2><div id="chart"></div></section>
+
+<div class="hero">
+  <small id="hl"></small>
+  <div class="big num" id="hsave">0</div>
+  <div class="bar"><i id="hbar"></i></div>
+  <div class="bar-l"><span id="hrate"></span><span id="hspend"></span></div>
+</div>
+
+<div class="grid">
+  <div class="stat"><small data-t="now"></small><b class="num" id="sNow">0</b></div>
+  <div class="stat"><small data-t="month"></small><b class="num" id="sMonth">0</b></div>
+  <div class="stat" style="grid-column:1/-1"><small id="gl"></small><b class="num" id="sGoal">—</b></div>
+</div>
+
+<section class="box" id="b-set">
+  <h2 data-t="settings"></h2>
+  <div class="set" style="grid-template-columns:1fr 1fr">
+    <div><label for="dstart" data-t="d_start"></label><input class="num" id="dstart" type="date"></div>
+    <div><label for="dend" data-t="d_end"></label><input class="num" id="dend" type="date"></div>
+  </div>
+  <div class="set" style="grid-template-columns:1fr"><div><label for="dsal" data-t="d_sal"></label><input class="num" id="dsal" type="date"></div></div>
+  <div class="set">
+    <div><label for="months" data-t="months"></label><input class="num" id="months" type="number" min="1" max="120" inputmode="numeric" readonly></div>
+    <div><label for="goal" data-t="goalin"></label><input class="num" id="goal" type="number" min="0" inputmode="decimal"></div>
+    <div style="display:none"><label for="cur" data-t="cur"></label><input class="num" id="cur" type="text" maxlength="6"></div>
+  </div>
+</section>
+
+<section class="box" id="b-assets"><h2 data-t="h_assets"></h2><div class="tot" id="t-assets"></div><div class="rows"></div><button class="add" data-add="assets" data-t="add_assets"></button></section>
+<section class="box resbox" id="b-result">
+  <h2 data-t="r_title"></h2>
+  <div class="hint" id="rNote"></div>
+  <ul class="sum">
+    <li><span data-t="r_inc"></span><span class="num" id="rInc">0</span></li>
+    <li><span data-t="r_exp"></span><span class="num" id="rExp">0</span></li>
+    <li class="fin"><span data-t="r_net"></span><span class="num" id="rNet">0</span></li>
+  </ul>
+  <button class="add" data-tab="log" data-t="x_go" style="margin-top:10px"></button>
+</section>
+
+
+<div id="msg"></div>
+<section class="box" id="b-tl"><h2 data-t="tl_title"></h2><div class="hint" id="tlnote" style="margin-bottom:8px"></div><div id="tl"></div></section>
+</div>
+
+
+<div id="tab-log" hidden>
+  <div class="pgh"><h2 data-t="tt_log"></h2><p data-t="td_log"></p></div>
+  <section class="box" id="b-month">
+    <div class="mrow"><button class="ghost" id="mprev" aria-label="-">‹</button><input type="month" id="lm" class="num"><button class="ghost" id="mnext" aria-label="+">›</button></div>
+    <div class="mlabel" id="mlabel"></div>
+    <div class="note ok" id="lfill" hidden></div>
+    <label class="chk" style="margin-top:10px"><input type="checkbox" id="lex"><span data-t="l_ex"></span></label>
+    <div class="hint" data-t="l_saved"></div>
+  </section>
+  <div class="kt">
+    <div class="k k3"><small data-t="l_inc"></small><b class="num" id="lInc">0</b></div>
+    <div class="k k4"><small data-t="l_exp"></small><b class="num" id="lExp">0</b></div>
+    <div class="k k1"><small data-t="l_tnet"></small><b class="num" id="lNet">0</b></div>
+  </div>
+  <section class="box li" id="b-linc">
+    <div class="lh"><h2 data-t="l_src"></h2><b class="num" id="t-linc"></b></div>
+    <div class="rows"></div>
+    <div class="addr"><input class="aamt num" id="aamt-income" type="number" inputmode="decimal" placeholder="0"><select class="sel" id="asel-income"></select></div>
+    <input class="aname" id="aname-income" hidden>
+    <button class="add2 g" data-lnew="income" data-t="l_add_in"></button>
+  </section>
+  <section class="box lr" id="b-lexp">
+    <div class="lh"><h2 data-t="l_exps"></h2><b class="num" id="t-lexp"></b></div>
+    <div class="rows"></div>
+    <div class="addr"><input class="aamt num" id="aamt-expense" type="number" inputmode="decimal" placeholder="0"><select class="sel" id="asel-expense"></select></div>
+    <input class="aname" id="aname-expense" hidden>
+    <button class="add2 r" data-lnew="expense" data-t="l_add_ex"></button>
+  </section>
+  <section class="box" id="b-lsum">
+    <h2 data-t="l_sum"></h2>
+    <ul class="sum">
+      <li><span data-t="l_tinc"></span><span class="num" id="lsInc"></span></li>
+      <li><span data-t="l_texp"></span><span class="num" id="lsExp"></span></li>
+      <li class="fin"><span data-t="l_tnet"></span><span class="num" id="lsNet"></span></li>
+    </ul>
+    <div class="hint" id="lVs" style="margin-top:6px"></div>
+  </section>
+  <section class="box" id="b-fc">
+    <h2 data-t="fc_title"></h2>
+    <div class="hint" data-t="fc_desc"></div>
+    <button class="add" id="fcCopy" data-t="fc_copy" style="margin-top:10px"></button>
+    <label class="chk" style="margin-top:10px"><input type="checkbox" id="fcSelM"><span id="fcSelL"></span></label>
+    <label class="fl" for="fcM" data-t="fc_months"></label>
+    <select class="sel w" id="fcM"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="18">18</option><option value="24">24</option></select>
+    <label class="fl" for="fcInc" data-t="fc_inc"></label>
+    <input class="w num" id="fcInc" type="number" inputmode="decimal">
+    <label class="fl" for="fcExp" data-t="fc_exp"></label>
+    <input class="w num" id="fcExp" type="number" inputmode="decimal">
+    <div class="grid">
+      <div class="stat"><small data-t="fc_tinc"></small><b class="num" id="fcTInc">0</b></div>
+      <div class="stat"><small data-t="fc_texp"></small><b class="num" id="fcTExp">0</b></div>
+      <div class="stat"><small data-t="fc_selt"></small><b class="num" id="fcSel">0</b></div>
+      <div class="stat"><small data-t="fc_net"></small><b class="num" id="fcNet">0</b></div>
+      <div class="stat"><small data-t="fc_end"></small><b class="num" id="fcEnd">0</b></div>
+    </div>
+    <label class="chk" style="margin-top:6px"><input type="checkbox" id="fcShow"><span data-t="fc_show"></span></label>
+    <label class="chk"><input type="checkbox" id="fcIncl"><span data-t="fc_incl"></span></label>
+    <div class="hint" data-t="fc_note"></div>
+  </section>
+  <div class="foot" style="margin-bottom:12px"><button class="ghost" id="lcopy" data-t="l_copy"></button><button class="ghost" id="ldel" data-t="l_del"></button></div>
+  <section class="box" id="b-link">
+    <h2 data-t="k_title"></h2>
+    <label class="chk"><input type="checkbox" id="lnk"><span data-t="k_chk"></span></label>
+    <div class="hint" id="kinfo"></div>
+    <div class="hint" id="kavg"></div>
+    <button class="add" id="ladopt" data-t="k_adopt" style="display:none"></button>
+  </section>
+  <section class="box" id="b-hist"><h2 data-t="l_hist"></h2><div class="tot" id="lstats"></div><div id="hist"></div></section>
+</div>
+
+</main>
+
+<script>
+(function(){
+var KEY='cashPlanner.v1';
+var T={
+ar:{title:'مخطط الكاش والتوفير',sub:'أدخل ما لديك الآن ودخلك ومصاريفك الشهرية، وسيُحسب لك المتوقع توفيره.',
+endl:'الرصيد المتوقع بنهاية الفترة',now:'المتوفر لديك الآن',month:'صافي التوفير الشهري',goal:'الهدف',goalleft:'المتبقي للوصول إلى الهدف',goalok:'تحقق الهدف',
+settings:'الإعدادات',months:'المدة (أشهر)',goalin:'هدف التوفير',cur:'العملة',
+h_assets:'المتوفر الآن',h_income:'الدخل الشهري المتوقع',h_expense:'المصاريف الشهرية',
+add_assets:'+ إضافة مبلغ',add_income:'+ إضافة دخل',add_expense:'+ إضافة مصروف',
+tot:'المجموع: ',mtot:'المجموع الشهري: ',h_sum:'الملخص النهائي',
+u1:'المتوفر الآن',u2:'إجمالي الدخل خلال الفترة',u3:'إجمالي المصاريف خلال الفترة',u4:'المتوقع توفيره خلال الفترة',u5:'المجموع النهائي (المتوفر + المتوقع)',
+reset:'مسح كل البيانات',confirm:'هل تريد مسح كل البيانات؟',
+cash:'كاش في اليد',bank:'الحساب البنكي',salary:'الراتب',rent:'الإيجار',food:'الطعام',transport:'المواصلات',bills:'فواتير واشتراكات',
+ph_assets:'مثال: كاش',ph_income:'مصدر الدخل',ph_expense:'نوع المصروف',a_name:'الاسم',a_amt:'المبلغ',a_del:'حذف',spend:'المصاريف: '},
+de:{title:'Cash- & Sparplaner',sub:'Gib ein, was du aktuell hast sowie Einnahmen und Ausgaben pro Monat – die erwartete Ersparnis wird berechnet.',
+endl:'Erwarteter Kontostand am Ende des Zeitraums',now:'Aktuell verfügbar',month:'Monatliche Ersparnis (netto)',goal:'Sparziel',goalleft:'Noch bis zum Ziel',goalok:'Ziel erreicht',
+settings:'Einstellungen',months:'Dauer (Monate)',goalin:'Sparziel',cur:'Währung',
+h_assets:'Aktuell verfügbar',h_income:'Erwartetes Monatseinkommen',h_expense:'Monatliche Ausgaben',
+add_assets:'+ Betrag hinzufügen',add_income:'+ Einnahme hinzufügen',add_expense:'+ Ausgabe hinzufügen',
+tot:'Summe: ',mtot:'Monatssumme: ',h_sum:'Abschlusszusammenfassung',
+u1:'Aktuell verfügbar',u2:'Gesamteinnahmen im Zeitraum',u3:'Gesamtausgaben im Zeitraum',u4:'Erwartete Ersparnis im Zeitraum',u5:'Endsumme (verfügbar + erwartet)',
+reset:'Alle Daten löschen',confirm:'Alle Daten wirklich löschen?',
+cash:'Bargeld',bank:'Bankkonto',salary:'Gehalt',rent:'Miete',food:'Essen',transport:'Verkehr',bills:'Rechnungen & Abos',
+ph_assets:'z. B. Bargeld',ph_income:'Einkommensquelle',ph_expense:'Ausgabenart',a_name:'Name',a_amt:'Betrag',a_del:'Löschen',spend:'Ausgaben: '}
+};
+Object.assign(T.ar,{tab_plan:'التخطيط',tab_log:'السجل الشهري',l_inc:'الدخل',l_exp:'المصاريف',l_net:'الصافي (المدخر هذا الشهر)',l_income:'الدخل الفعلي',l_expense:'المصاريف الفعلية',l_add_in:'+ إضافة دخل',l_add_ex:'+ إضافة مصروف',l_copy:'نسخ من الخطة',l_copyc:'سيُستبدل ما سجلته في هذا الشهر بأرقام الخطة. متابعة؟',l_del:'حذف هذا الشهر',l_delc:'حذف بيانات هذا الشهر؟',l_hist:'سجل الأشهر',l_empty:'لا توجد أشهر محفوظة بعد. سجّل بيانات أي شهر وستظهر هنا.',l_total:'إجمالي المدخر',l_avg:'المتوسط الشهري',l_vs:'الخطة',l_saved:'تُحفظ التغييرات تلقائيًا على جهازك.'});
+Object.assign(T.de,{tab_plan:'Planung',tab_log:'Monatsbuch',l_inc:'Einnahmen',l_exp:'Ausgaben',l_net:'Netto (gespart in diesem Monat)',l_income:'Tatsächliche Einnahmen',l_expense:'Tatsächliche Ausgaben',l_add_in:'+ Einnahme hinzufügen',l_add_ex:'+ Ausgabe hinzufügen',l_copy:'Aus Plan übernehmen',l_copyc:'Deine Einträge für diesen Monat werden durch die Planwerte ersetzt. Fortfahren?',l_del:'Diesen Monat löschen',l_delc:'Daten dieses Monats löschen?',l_hist:'Monatsübersicht',l_empty:'Noch keine Monate gespeichert. Trage Daten für einen Monat ein, dann erscheint er hier.',l_total:'Insgesamt gespart',l_avg:'Monatsdurchschnitt',l_vs:'Plan',l_saved:'Änderungen werden automatisch auf deinem Gerät gespeichert.'});
+Object.assign(T.ar,{k_title:'الربط مع السجل الشهري',k_chk:'إضافة صافي الأشهر المسجلة (حتى الشهر الحالي) إلى المتوفر',k_none:'سجّل أشهرًا في تبويب السجل الشهري ليظهر الربط هنا.',k_net:'صافي الأشهر المسجلة',k_cnt:'عدد الأشهر',k_avg:'المتوسط الفعلي لآخر أشهر',k_adopt:'اعتماد المتوسط الفعلي في الخطة',k_base:'رصيد البداية',k_log:'السجل',l_adoptc:'سيتم استبدال بنود الدخل والمصاريف في الخطة بمتوسط الأرقام الفعلية من السجل. متابعة؟',unnamed:'بدون اسم'});
+Object.assign(T.de,{k_title:'Verknüpfung mit dem Monatsbuch',k_chk:'Netto der erfassten Monate (bis zum aktuellen Monat) zum verfügbaren Betrag addieren',k_none:'Erfasse Monate im Monatsbuch, dann erscheint die Verknüpfung hier.',k_net:'Netto der erfassten Monate',k_cnt:'Anzahl Monate',k_avg:'Tatsächlicher Durchschnitt (letzte Monate)',k_adopt:'Tatsächlichen Durchschnitt in den Plan übernehmen',k_base:'Startguthaben',k_log:'Monatsbuch',l_adoptc:'Die Einnahmen- und Ausgabenposten im Plan werden durch den tatsächlichen Durchschnitt aus dem Monatsbuch ersetzt. Fortfahren?',unnamed:'Ohne Namen'});
+Object.assign(T.ar,{x_note:'تُحسب المصاريف الشهرية من متوسط مصاريفك الفعلية لآخر 3 أشهر مسجلة. سجّل المصاريف في تبويب السجل الشهري.',x_go:'الانتقال إلى السجل الشهري',l_adoptc:'سيتم استبدال بنود الدخل في الخطة بمتوسط الدخل الفعلي من السجل. متابعة؟',k_adopt:'اعتماد متوسط الدخل الفعلي في الخطة',l_copy:'تعبئة من الخطة والشهر السابق'});
+Object.assign(T.de,{x_note:'Die monatlichen Ausgaben werden aus dem Durchschnitt deiner tatsächlichen Ausgaben der letzten 3 erfassten Monate berechnet. Erfasse sie im Monatsbuch.',x_go:'Zum Monatsbuch',l_adoptc:'Die Einnahmeposten im Plan werden durch den tatsächlichen Durchschnitt aus dem Monatsbuch ersetzt. Fortfahren?',k_adopt:'Durchschnittliche Einnahmen in den Plan übernehmen',l_copy:'Aus Plan und Vormonat übernehmen'});
+var CATS_E=[['rent','الإيجار','Miete'],['groceries','البقالة والطعام','Lebensmittel'],['restaurants','المطاعم والمقاهي','Restaurants & Café'],['transport','المواصلات','Verkehr'],['fuel','الوقود','Kraftstoff'],['car','السيارة (صيانة وتأمين)','Auto (Wartung)'],['electricity','الكهرباء','Strom'],['water','المياه','Wasser'],['heating','التدفئة والغاز','Heizung & Gas'],['internet','الإنترنت','Internet'],['phone','الهاتف','Handy'],['insurance','التأمين','Versicherung'],['health','الصحة والأدوية','Gesundheit & Medikamente'],['education','التعليم والدورات','Bildung & Kurse'],['childcare','الأطفال','Kinder'],['clothing','الملابس','Kleidung'],['entertainment','الترفيه','Freizeit & Unterhaltung'],['travel','السفر','Reisen'],['loans','الأقساط والقروض','Raten & Kredite'],['subscriptions','الاشتراكات','Abos'],['gifts','الهدايا والتبرعات','Geschenke & Spenden'],['taxes','الضرائب والرسوم','Steuern & Gebühren'],['other','أخرى','Sonstiges']];
+var CATS_I=[['i_salary','الراتب','Gehalt'],['i_bonus','مكافأة','Bonus'],['i_freelance','عمل حر','Nebenverdienst'],['i_rental','إيجار عقار','Mieteinnahmen'],['i_benefit','إعانات ومنح','Kindergeld & Zuschüsse'],['i_invest','استثمارات','Kapitaleinkommen'],['i_gift','هدية','Geschenk'],['other','أخرى','Sonstiges']];
+CATS_E.concat(CATS_I).forEach(function(c){T.ar['c_'+c[0]]=c[1];T.de['c_'+c[0]]=c[2]});
+Object.assign(T.ar,{c_custom:'✏️ اسم مخصص…',sel_exp:'اختر نوع المصروف',sel_inc:'اختر مصدر الدخل'});
+Object.assign(T.de,{c_custom:'✏️ Eigener Name…',sel_exp:'Ausgabenart wählen',sel_inc:'Einkommensart wählen'});
+Object.assign(T.ar,{r_title:'نتيجة السجل الشهري',r_inc:'متوسط الدخل الشهري',r_exp:'متوسط المصاريف الشهرية',r_net:'الصافي الشهري',r_from:'محسوبة تلقائيًا من متوسط آخر الأشهر المسجلة في السجل الشهري',r_none:'لم تُسجّل أي شهر بعد. سجّل الدخل والمصاريف في السجل الشهري لتظهر النتيجة هنا.'});
+Object.assign(T.de,{r_title:'Ergebnis aus dem Monatsbuch',r_inc:'Ø Monatseinkommen',r_exp:'Ø Monatsausgaben',r_net:'Monatliche Ersparnis',r_from:'Automatisch berechnet aus dem Durchschnitt der zuletzt erfassten Monate im Monatsbuch',r_none:'Noch kein Monat erfasst. Trage Einnahmen und Ausgaben im Monatsbuch ein, dann erscheint das Ergebnis hier.'});
+Object.assign(T.ar,{tab_an:'التحليل',d_start:'تاريخ البداية',d_end:'تاريخ النهاية',months:'عدد الأشهر (محسوب)',a_sal:'نسبة الراتب من الدخل',a_cost:'نسبة التكاليف من الدخل',a_save:'نسبة التوفير من الدخل',a_split:'توزيع الدخل بين التكاليف والتوفير',a_inc:'مصادر الدخل',a_exp:'توزيع المصاريف',a_basis:'محسوبة من متوسط آخر الأشهر المسجلة',a_none:'سجّل شهرًا واحدًا على الأقل في السجل الشهري ليظهر التحليل هنا.',a_ofinc:'من الدخل',a_r1:'ممتاز: نسبة توفيرك 20% أو أكثر.',a_r2:'جيد: نسبة توفيرك بين 10% و 20%.',a_r3:'منخفضة: نسبة توفيرك أقل من 10%، راجع أكبر بنود المصاريف.',a_r4:'عجز: مصاريفك أعلى من دخلك.'});
+Object.assign(T.de,{tab_an:'Analyse',d_start:'Startdatum',d_end:'Enddatum',months:'Anzahl Monate (berechnet)',a_sal:'Gehaltsanteil am Einkommen',a_cost:'Kostenquote',a_save:'Sparquote',a_split:'Aufteilung: Kosten und Ersparnis',a_inc:'Einkommensquellen',a_exp:'Verteilung der Ausgaben',a_basis:'Berechnet aus dem Durchschnitt der letzten erfassten Monate',a_none:'Erfasse mindestens einen Monat im Monatsbuch, dann erscheint hier die Analyse.',a_ofinc:'vom Einkommen',a_r1:'Sehr gut: Sparquote von 20 % oder mehr.',a_r2:'Gut: Sparquote zwischen 10 % und 20 %.',a_r3:'Niedrig: Sparquote unter 10 % – prüfe die größten Ausgabenposten.',a_r4:'Defizit: Die Ausgaben liegen über dem Einkommen.'});
+Object.assign(T.ar,{d_sal:'تاريخ أول راتب قادم (يتكرر شهريًا في نفس اليوم)',tl_title:'الجدول الزمني للرصيد',tl_note:'يُضاف الراتب في تاريخه من كل شهر بدءًا من أول راتب، وتُخصم المصاريف موزّعة على أيام الفترة.',tl_start:'الرصيد الحالي',tl_sal:'راتب',tl_exp:'مصاريف حتى هذا التاريخ',tl_end:'نهاية الفترة'});
+Object.assign(T.de,{d_sal:'Erstes kommendes Gehalt (wiederholt sich monatlich am selben Tag)',tl_title:'Zeitplan des Kontostands',tl_note:'Das Gehalt kommt ab dem ersten Gehaltsdatum jeweils am selben Tag jedes Monats; die Ausgaben werden auf die Tage des Zeitraums verteilt.',tl_start:'Aktueller Stand',tl_sal:'Gehalt',tl_exp:'Ausgaben bis zu diesem Datum',tl_end:'Ende des Zeitraums'});
+Object.assign(T.ar,{l_filled:'نُسخت بنود هذا الشهر تلقائيًا من',l_filled2:'عدّل ما تحتاج إليه وستُحفظ تعديلاتك.'});
+Object.assign(T.de,{l_filled:'Die Posten dieses Monats wurden automatisch übernommen aus',l_filled2:'Passe sie bei Bedarf an – Änderungen werden gespeichert.'});
+Object.assign(T.ar,{k_chk:'إضافة صافي الأشهر المسجلة بعد شهر تاريخ البداية إلى المتوفر (شهر البداية وما قبله محسوبان مسبقًا في المتوفر)'});
+Object.assign(T.de,{k_chk:'Netto der erfassten Monate nach dem Startmonat zum verfügbaren Betrag addieren (Startmonat und frühere sind im verfügbaren Betrag bereits enthalten)'});
+Object.assign(T.ar,{l_ex:'استبعاد هذا الشهر من الحسابات والتحليل (محسوب مسبقًا في المتوفر)',l_exl:'مستبعد',r_fb:'لا توجد أشهر محسوبة؛ التقدير مأخوذ من بيانات شهر',a_none:'لا توجد أشهر محسوبة بعد (الأشهر المستبعدة لا تُحسب). سجّل شهرًا واحدًا على الأقل ليظهر التحليل.'});
+Object.assign(T.de,{l_ex:'Diesen Monat aus Berechnungen und Analyse ausschließen (bereits im verfügbaren Betrag enthalten)',l_exl:'ausgeschlossen',r_fb:'Keine berücksichtigten Monate; Schätzung aus den Daten von',a_none:'Noch keine berücksichtigten Monate (ausgeschlossene Monate zählen nicht). Erfasse mindestens einen Monat, dann erscheint hier die Analyse.'});
+Object.assign(T.ar,{title:'ميزان'});
+Object.assign(T.de,{title:'Mizan'});
+var def={lang:'ar',log:{},cur:'€',months:6,goal:0,
+ assets:[{k:'cash',v:0},{k:'bank',v:0}],
+ income:[{k:'salary',v:0}],
+ expense:[{k:'rent',v:0},{k:'food',v:0},{k:'transport',v:0},{k:'bills',v:0}]};
+var S;
+try{var r=localStorage.getItem(KEY);S=r?JSON.parse(r):null}catch(e){S=null}
+if(!S||!S.assets)S=JSON.parse(JSON.stringify(def));
+if(['ar','de','en'].indexOf(S.lang)<0)S.lang='ar';
+if(!S.log)S.log={};
+Object.keys(S.log).forEach(function(k){['income','expense'].forEach(function(f){(S.log[k][f]||[]).forEach(function(i){if(i.c==='i_pension')i.c='i_salary'})})});
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(id){return document.getElementById(id)}
+function t(k){var d=T[S.lang]||T.ar;return d[k]||T.ar[k]||k}
+function LC(){return {ar:'ar-u-nu-latn',de:'de-DE',en:'en-US'}[S.lang]||'en-US'}
+function L3(a,d,e){return S.lang==='de'?d:(S.lang==='en'?e:a)}
+function num(x){x=parseFloat(x);return isFinite(x)?x:0}
+function sum(a){return a.reduce(function(s,i){return s+num(i.v)},0)}
+function fmt(x){return (x<0?'−':'')+Math.abs(x).toLocaleString(S.lang==='de'?'de-DE':'en-US',{maximumFractionDigits:2})+' '+S.cur}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function nm(it){return (it.n!==undefined&&it.n!=='')?it.n:(it.k?t(it.k):'')}
+function render(k){
+  var box=document.querySelector('#b-'+k+' .rows');
+  box.innerHTML=S[k].map(function(it,i){
+    return '<div class="row"><input class="n" data-k="'+k+'" data-i="'+i+'" data-f="n" value="'+esc(nm(it))+'" placeholder="'+esc(t('ph_'+k))+'" aria-label="'+t('a_name')+'">'+
+    '<input class="v num" type="number" inputmode="decimal" data-k="'+k+'" data-i="'+i+'" data-f="v" value="'+(it.v===0?'':it.v)+'" placeholder="0" aria-label="'+t('a_amt')+'">'+
+    '<button class="x" data-del="'+k+'" data-i="'+i+'" aria-label="'+t('a_del')+'">×</button></div>'}).join('');
+}
+function unitDat(m){return S.lang==='de'?(m===1?'Monat':'Monaten'):(S.lang==='en'?(m===1?'month':'months'):(m<=10?'أشهر':'شهرًا'))}
+function unitAcc(m){return S.lang==='de'?(m===1?'Monat':'Monate'):(S.lang==='en'?(m===1?'month':'months'):(m<=10?'أشهر':'شهرًا'))}
+function calc(){
+  var de=S.lang==='de',en=S.lang==='en';
+  var base=sum(S.assets),ln=linkNet(),now=base+ln,inc=incPlan(),exp=expPlan(),m=Math.max(1,Math.round(num(S.months))||1);
+  var pl=plan(now,inc,exp),net=inc-exp,total=pl.total,end=now+total,goal=num(S.goal);tlRender(pl,inc);
+  $('t-assets').textContent=t('tot')+fmt(now)+(ln?'  ('+t('k_base')+' '+fmt(base)+' + '+t('k_log')+' '+fmt(ln)+')':'');lnkRender();
+  var av2=logAvg(),fb2=av2?null:fbAvg();$('rInc').textContent=fmt(inc);$('rExp').textContent=fmt(exp);$('rNet').textContent=fmt(inc-exp);$('rNote').textContent=av2?t('r_from')+' ('+t('k_cnt')+': '+av2.n+')':(fb2?t('r_fb')+' '+mlabel(fb2.fb):t('r_none'));
+  
+  $('sNow').textContent=fmt(now);
+  var sm=$('sMonth');sm.textContent=fmt(net);sm.className='num '+(net>=0?'pos':'neg');
+  $('sEnd').textContent=fmt(end);$('endhero').className='endhero'+(end<0?' bad':'');
+  $('endsub').textContent=t('now')+' '+fmt(now)+'  +  '+L3('المتوقع توفيره ','Erwartete Ersparnis ','Expected savings ')+fmt(total);
+  var h=$('hsave');h.textContent=fmt(total);h.className='big num'+(total<0?' neg':'');
+  $('hl').textContent=L3('المتوقع توفيره خلال ','Erwartete Ersparnis in ','Expected savings in ')+m+' '+unitDat(m);
+  var rate=inc>0?Math.max(0,Math.min(100,net/inc*100)):0,rr=Math.round(inc>0?net/inc*100:0);
+  $('hbar').style.width=rate+'%';
+  $('hrate').textContent=de?('Sparquote: '+rr+' % vom Einkommen'):(en?('Savings rate: '+rr+'% of income'):('نسبة التوفير: '+rr+'٪ من الدخل'));
+  $('hspend').textContent=t('spend')+fmt(pl.expT);
+  
+  
+  
+  
+  var gs=$('sGoal'),note='';
+  $('gl').textContent=t('goal');gs.textContent='—';gs.className='num';
+  if(goal>0){
+    var left=goal-now;
+    $('gl').textContent=t('goalleft');
+    if(left<=0){gs.textContent=t('goalok');gs.className='num pos';
+      note=de?('Dein aktueller Stand deckt das Ziel ('+fmt(goal)+') bereits ab.'):(en?('Your current balance already covers the goal ('+fmt(goal)+').'):('رصيدك الحالي يغطي الهدف ('+fmt(goal)+') بالفعل.'));
+      note='<div class="note ok">'+note+'</div>'}
+    else if(net>0){var need=Math.ceil(left/net);gs.textContent=fmt(left);
+      var inside=need<=m;
+      note=de?('Du erreichst '+fmt(goal)+' nach etwa '+need+' '+(need===1?'Monat':'Monaten')+(inside?' – also innerhalb des Zeitraums.':' – also nach Ende des Zeitraums.')):
+        (en?('You will reach '+fmt(goal)+' in about '+need+' '+(need===1?'month':'months')+(inside?' – within the selected period.':' – after the selected period ends.')):
+        ('ستصل إلى '+fmt(goal)+' بعد نحو '+need+' شهر'+(inside?'، أي ضمن المدة المحددة.':'، أي بعد انتهاء المدة المحددة.')));
+      note='<div class="note '+(inside?'ok':'bad')+'">'+note+'</div>'}
+    else{gs.textContent=fmt(left);gs.className='num neg';
+      note='<div class="note bad">'+(de?'Deine Ausgaben sind gleich hoch oder höher als dein Einkommen; ohne Kürzungen erreichst du das Ziel nicht.':(en?'Your expenses equal or exceed your income, so you will not reach the goal without cutting expenses.':'مصاريفك تساوي دخلك أو تزيد عليه، لذلك لن تصل إلى الهدف دون تقليل المصاريف.'))+'</div>'}
+  }
+  if(!note&&net<0)note='<div class="note bad">'+(de?('Deine Ausgaben liegen monatlich um '+fmt(-net)+' über deinem Einkommen, dein Kontostand sinkt mit der Zeit.'):(en?('Your expenses exceed your income by '+fmt(-net)+' per month; your balance will decrease over time.'):('مصاريفك أعلى من دخلك بمقدار '+fmt(-net)+' شهريًا، وسينقص رصيدك مع الوقت.')))+'</div>';
+  $('msg').innerHTML=note;
+}
+function todayRender(){var e=$('todayDate');if(e)try{e.textContent=new Date().toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long',year:'numeric'})}catch(x){e.textContent=ymd(new Date())}}
+function applyLang(){
+  var d=document.documentElement;d.lang=S.lang;d.dir=S.lang==='ar'?'rtl':'ltr';todayRender();
+  document.title=t('title');
+  [].forEach.call(document.querySelectorAll('[data-t]'),function(e){e.textContent=t(e.dataset.t)});
+  [].forEach.call(document.querySelectorAll('[data-lang]'),function(b){b.setAttribute('aria-pressed',b.dataset.lang===S.lang)});
+  render('assets');calc();lrender();arender();homeRender();moreRender();
+}
+var _d=new Date(),cm=_d.getFullYear()+'-'+('0'+(_d.getMonth()+1)).slice(-2);
+function getM(){return S.log[cm]||(S.log[cm]={income:[],expense:[]})}
+function mlabel(k){var p=k.split('-');try{return new Date(+p[0],+p[1]-1,1).toLocaleDateString(LC(),{month:'long',year:'numeric'})}catch(e){return k}}
+function curKey(){var n=new Date();return n.getFullYear()+'-'+('0'+(n.getMonth()+1)).slice(-2)}
+function autoFill(){
+  var m=S.log[cm];
+  if(m&&(m.income.length||m.expense.length))return;
+  if(S.noFill&&S.noFill[cm])return;
+  var prev=Object.keys(S.log).filter(function(k){var x=S.log[k];return k<cm&&(x.income.length||x.expense.length)}).sort().pop();
+  if(!prev)return;
+  var src=S.log[prev],cp=function(a){return a.map(function(i){var o={v:num(i.v)};if(i.c!==undefined)o.c=i.c;if(i.n)o.n=i.n;return o})};
+  S.log[cm]={income:cp(src.income),expense:cp(src.expense)};
+  (S.filled=S.filled||{})[cm]=prev;save();
+}
+function shiftM(d){var p=cm.split('-'),dt=new Date(+p[0],+p[1]-1+d,1);cm=dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2);autoFill();lrender()}
+var PAL_E=[['#e76f51','🏠'],['#2a9d8f','🛒'],['#f4a261','🍽️'],['#457b9d','🚌'],['#6d6875','⛽'],['#5c677d','🚗'],['#e9c46a','💡'],['#48a9d6','💧'],['#e5533d','🔥'],['#7b61ff','🌐'],['#9b5de5','📱'],['#3d5a80','🛡️'],['#e63946','💊'],['#6a994e','🎓'],['#ff7eb6','🧒'],['#d65db1','👕'],['#f77f00','🎬'],['#00b4d8','✈️'],['#b5651d','💳'],['#8e7dbe','🔁'],['#ef476f','🎁'],['#7f8c8d','🧾'],['#95a5a6','➕']];
+var PAL_I=[['#0f7b5f','💼'],['#f2b705','🏆'],['#3a86ff','💻'],['#8d6e63','🏢'],['#ff7eb6','👶'],['#2a9d8f','📈'],['#ef476f','🎁'],['#95a5a6','➕']];
+function catInfo(k,key){var L=k==='income'?CATS_I:CATS_E,P=k==='income'?PAL_I:PAL_E;for(var j=0;j<L.length;j++)if(L[j][0]===key&&P[j])return{col:P[j][0],em:P[j][1]};return{col:'',em:''}}
+function catOf(i){return i.k==='salary'?'i_salary':(i.k&&i.k.indexOf('c_')===0?i.k.slice(2):'custom')}
+function catOpts(k,sel){
+  var L=k==='income'?CATS_I:CATS_E;
+  return '<option value="">'+esc(t(k==='income'?'sel_inc':'sel_exp'))+'</option>'+L.map(function(c){return '<option value="'+c[0]+'"'+(sel===c[0]?' selected':'')+'>'+catInfo(k,c[0]).em+' '+esc(t('c_'+c[0]))+'</option>'}).join('')+'<option value="custom"'+(sel==='custom'?' selected':'')+'>'+esc(t('c_custom'))+'</option>';
+}
+function lrows(k){
+  var m=S.log[cm]||{income:[],expense:[]},id=k==='income'?'linc':'lexp';
+  document.querySelector('#b-'+id+' .rows').innerHTML=m[k].map(function(it,i){
+    var c=it.c!==undefined?it.c:(it.n?'custom':''),a=' data-lk="'+k+'" data-i="'+i+'"',ci=catInfo(k,c);
+    var lab=(c==='custom'||c==='')?'<input class="cn"'+a+' data-f="n" value="'+esc(it.n||'')+'" placeholder="'+esc(t(k==='income'?'ph_income':'ph_expense'))+'" aria-label="'+t('a_name')+'">':'<b>'+esc((ci.em?ci.em+' ':'')+t('c_'+c))+'</b>';
+    return '<div class="ic"'+(ci.col?' style="border-inline-start-color:'+ci.col+'"':'')+'><span class="sg">'+(k==='income'?'+':'\u2212')+'</span><div class="lb">'+lab+'<small>'+t(k==='income'?'l_inc':'l_exp')+'</small></div><div class="am"><span>'+esc(S.cur)+'</span><input class="v num" type="number" inputmode="decimal"'+a+' data-f="v" value="'+(it.v===0?'':it.v)+'" placeholder="0" aria-label="'+t('a_amt')+'"></div><button class="x" data-ldel="'+k+'" data-i="'+i+'" aria-label="'+t('a_del')+'">\u00d7</button></div>'}).join('');
+}
+function lrender(){
+  $('lm').value=cm;$('mlabel').textContent=mlabel(cm);
+  $('lex').checked=isExcl(cm);var fb=$('lfill');if(S.filled&&S.filled[cm]){fb.hidden=false;fb.textContent=t('l_filled')+' '+mlabel(S.filled[cm])+' — '+t('l_filled2')}else fb.hidden=true;
+  $('asel-income').innerHTML=catOpts('income','');$('asel-expense').innerHTML=catOpts('expense','');lrows('income');lrows('expense');lcalc();fcSync();
+}
+function lcalc(){
+  var m=S.log[cm]||{income:[],expense:[]},inc=sum(m.income),exp=sum(m.expense),net=inc-exp;
+  $('t-linc').textContent=fmt(inc);$('t-lexp').textContent=fmt(exp);
+  $('lInc').textContent=fmt(inc);$('lExp').textContent=fmt(exp);$('lsInc').textContent=fmt(inc);$('lsExp').textContent=fmt(exp);$('lsNet').textContent=fmt(net);
+  var n=$('lNet');n.textContent=fmt(net);n.className='num '+(net>=0?'pos':'neg');
+  var pn=incPlan()-expPlan(),df=net-pn;
+  $('lVs').textContent=t('l_vs')+': '+fmt(pn)+'  ('+(df>=0?'+':'−')+fmt(Math.abs(df))+')';
+  lhist();lnkRender();try{fcUi()}catch(e){}
+}
+function lhist(){
+  var ks=Object.keys(S.log).filter(function(k){var m=S.log[k];return m.income.length||m.expense.length}).sort().reverse(),h=$('hist');
+  if(!ks.length){h.innerHTML='<div class="hint">'+t('l_empty')+'</div>';$('lstats').textContent='';return}
+  var sk=fcSelKeys(),tot=0,mx=1,cnt=ks.filter(function(k){return k<=curKey()&&!isExcl(k)}).length;
+  var rows=ks.map(function(k){var m=S.log[k],i=sum(m.income),e=sum(m.expense),n=i-e;if(k<=curKey()&&!isExcl(k))tot+=n;mx=Math.max(mx,Math.abs(n));return{k:k,i:i,e:e,n:n}});
+  h.innerHTML=rows.map(function(r){return '<button class="hr'+(r.k===cm?' on':'')+'" data-open="'+r.k+'"><span class="hm">'+mlabel(r.k)+(isExcl(r.k)?' <small class="hint">'+t('l_exl')+'</small>':'')+(sk.indexOf(r.k)>=0?' <small class="pos">✓</small>':'')+'</span><span class="hn num '+(r.n>=0?'pos':'neg')+'">'+fmt(r.n)+'</span><span class="hb"><i class="'+(r.n<0?'neg':'')+'" style="width:'+Math.round(Math.abs(r.n)/mx*100)+'%"></i></span><span class="hd num">'+fmt(r.i)+' ↑ · '+fmt(r.e)+' ↓</span></button>'}).join('');
+  $('lstats').textContent=t('l_total')+': '+fmt(tot)+'  |  '+t('l_avg')+': '+fmt(cnt?tot/cnt:0);
+}
+function logKeys(){var n=new Date(),ck=n.getFullYear()+'-'+('0'+(n.getMonth()+1)).slice(-2);return Object.keys(S.log).filter(function(k){var m=S.log[k];return k<=ck&&(m.income.length||m.expense.length)&&!isExcl(k)}).sort()}
+function allKeys(){return Object.keys(S.log).filter(function(k){var m=S.log[k];return m.income.length||m.expense.length}).sort()}
+function isExcl(k){var e=S.excl&&S.excl[k];return e===undefined?(k<=(S.start||'').slice(0,7)):e===true}
+function fbAvg(){var k=allKeys().filter(function(x){return x<=curKey()}).pop();if(!k)return null;return{n:1,ks:[k],inc:sum(S.log[k].income),exp:sum(S.log[k].expense),fb:k}}
+function linked(){return S.addLog===true}
+function expPlan(){var av=logAvg()||fbAvg();return av?av.exp:sum(S.expense)}
+function incPlan(){var av=logAvg()||fbAvg();return av&&av.inc>0?av.inc:sum(S.income)}
+function linkKeys(){var sk=(S.start||'').slice(0,7);return logKeys().filter(function(k){return k>sk})}
+function linkNet(){if(!linked())return 0;return linkKeys().reduce(function(s,k){var m=S.log[k];return s+sum(m.income)-sum(m.expense)},0)}
+function logAvg(){var ks=logKeys().slice(-3);if(!ks.length)return null;var i=0,e=0;ks.forEach(function(k){i+=sum(S.log[k].income);e+=sum(S.log[k].expense)});return{n:ks.length,ks:ks,inc:i/ks.length,exp:e/ks.length}}
+function lnkRender(){
+  var ks=logKeys(),av=logAvg(),inf=$('kinfo'),ad=$('ladopt');
+  $('lnk').checked=linked();
+  if(!ks.length){inf.textContent=t('k_none');$('kavg').textContent='';ad.hidden=true;return}
+  var lk=linkKeys(),ln=0;lk.forEach(function(k){var m=S.log[k];ln+=sum(m.income)-sum(m.expense)});
+  inf.textContent=t('k_net')+': '+fmt(ln)+' — '+t('k_cnt')+': '+lk.length;
+  $('kavg').textContent=t('k_avg')+' ('+av.n+'): '+t('l_inc')+' '+fmt(av.inc)+' · '+t('l_exp')+' '+fmt(av.exp)+' · '+fmt(av.inc-av.exp);
+  ad.hidden=false;
+}
+function ymd(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function calcMonths(){var a=new Date(S.start+'T00:00:00'),b=new Date(S.end+'T00:00:00'),d=(b-a)/86400000;if(!isFinite(d)||d<=0)return 1;return Math.max(1,Math.round(d/30.4375))}
+function ensureDates(){if(!S.start||!S.end){var t0=new Date(),mo=Math.max(1,Math.round(parseFloat(S.months)||6));S.start=ymd(t0);S.end=ymd(new Date(t0.getFullYear(),t0.getMonth()+mo,t0.getDate()))}if(!S.salDate){var s0=pd(S.start);S.salDate=ymd(new Date(s0.getFullYear(),s0.getMonth()+1,1))}S.months=calcMonths();save()}
+function pd(s){return new Date(s+'T00:00:00')}
+function addM(f,i){var y=f.getFullYear(),m=f.getMonth()+i,last=new Date(y,m+1,0).getDate();return new Date(y,m,Math.min(f.getDate(),last))}
+function plan(now,inc,exp){
+  var a=pd(S.start),b=pd(S.end),first=pd(S.salDate);
+  if(!(b>a))b=addM(a,1);
+  var perDay=exp/30.4375,ev=[],i=0,d=new Date(first);
+  while(d<=b&&i<600){if(d>a)ev.push(new Date(d));i++;d=addM(first,i)}
+  var bal=now,prev=a,rows=[{d:a,type:'start',ex:0,bal:bal}],incT=0,expT=0;
+  ev.forEach(function(e){var ex=perDay*((e-prev)/86400000);expT+=ex;bal=bal-ex+inc;incT+=inc;rows.push({d:e,type:'sal',ex:ex,bal:bal});prev=e});
+  var ex2=perDay*((b-prev)/86400000);expT+=ex2;bal-=ex2;rows.push({d:b,type:'end',ex:ex2,bal:bal});
+  return{rows:rows,P:ev.length,incT:incT,expT:expT,total:incT-expT,end:bal}
+}
+function fdate(d){try{return d.toLocaleDateString(LC(),{day:'2-digit',month:'2-digit',year:'numeric'})}catch(e){return ymd(d)}}
+function tlRender(pl,inc){
+  $('tlnote').textContent=t('tl_note');goalBar(pl);chartRender(pl,inc);
+  $('tl').innerHTML=pl.rows.map(function(r){
+    var lab=r.type==='start'?t('tl_start'):r.type==='sal'?t('tl_sal')+' +'+fmt(inc):t('tl_end'),sub=r.type==='start'?'':t('tl_exp')+' −'+fmt(r.ex);
+    return '<div class="tr '+r.type+'"><span class="td">'+fdate(r.d)+'</span><span class="tx">'+lab+(sub?'<small>'+sub+'</small>':'')+'</span><span class="tv num'+(r.bal<0?' neg':'')+'">'+fmt(r.bal)+'</span></div>'}).join('');
+}
+function pct(a,b){return b>0?a/b*100:0}
+function fp(x){return (Math.round(x*10)/10).toLocaleString(S.lang==='de'?'de-DE':'en-US',{maximumFractionDigits:1})+'%'}
+function arender(){
+  var el=$('anbody');if(!el)return;var ks=logKeys().slice(-3);
+  if(!ks.length){el.innerHTML='<div class="box an1"><div class="hint">'+t('a_none')+'</div></div>';return}
+  var I={},E={},io=[],eo=[],sal=0;
+  function add(map,ord,it,list){var c=it.c&&it.c!=='custom'?it.c:'',nn=(it.n||'').trim(),key=c?'c:'+c:'n:'+nn.toLowerCase();
+    if(!map[key]){var ci=catInfo(list,c);map[key]={lab:c?(ci.em+' '+t('c_'+c)):(nn||t('unnamed')),col:ci.col||'#94a3b8',v:0};ord.push(key)}
+    map[key].v+=num(it.v)}
+  ks.forEach(function(k){S.log[k].income.forEach(function(it){add(I,io,it,'income');if(it.c==='i_salary')sal+=num(it.v)});S.log[k].expense.forEach(function(it){add(E,eo,it,'expense')})});
+  var n=ks.length,inc=0,exp=0;io.forEach(function(k){inc+=I[k].v});eo.forEach(function(k){exp+=E[k].v});
+  var net=inc-exp,pS=pct(sal,inc),pC=pct(exp,inc),pV=pct(net,inc);
+  var rate=pV>=20?['a_r1','#1f9d6c']:pV>=10?['a_r2','#3b78d8']:pV>=0?['a_r3','#cf7f1f']:['a_r4','#d6455c'];
+  var cw=Math.min(100,Math.max(0,pC)),sw=Math.min(100-cw,Math.max(0,pV)),cc=pC>100?'#d6455c':'#e59a3d';
+  function rows(map,ord,base,incB){return ord.slice().sort(function(a,b){return map[b].v-map[a].v}).map(function(k){var o=map[k];
+    return '<div class="ar"><div class="at"><span>'+esc(o.lab)+'</span><span class="num">'+fp(pct(o.v,base))+' · '+fmt(o.v/n)+'</span></div>'+(incB?'<div class="as">'+fp(pct(o.v,incB))+' '+t('a_ofinc')+'</div>':'')+'<span class="ab"><i style="width:'+Math.min(100,pct(o.v,base))+'%;background:'+o.col+'"></i></span></div>'}).join('')}
+  el.innerHTML='<div class="kt"><div class="k k1"><small>'+t('a_sal')+'</small><b class="num">'+fp(pS)+'</b></div><div class="k k2"><small>'+t('a_cost')+'</small><b class="num">'+fp(pC)+'</b></div><div class="k k3"><small>'+t('a_save')+'</small><b class="num">'+fp(pV)+'</b></div></div>'+
+  '<section class="box an1"><h2>'+t('a_split')+'</h2><div class="stk"><i style="width:'+cw+'%;background:'+cc+'"></i><i style="width:'+sw+'%;background:#35b07f"></i></div>'+
+  '<div class="lg"><span><b style="background:'+cc+'"></b>'+t('a_cost')+' '+fp(pC)+'</span><span><b style="background:#35b07f"></b>'+t('a_save')+' '+fp(pV)+'</span></div>'+
+  '<div class="note" style="color:'+rate[1]+';background:'+rate[1]+'1f">'+t(rate[0])+'</div><div class="hint" style="margin-top:8px">'+t('a_basis')+' ('+t('k_cnt')+': '+n+')</div></section>'+
+  '<section class="box an2"><h2>'+t('a_inc')+'</h2>'+rows(I,io,inc,0)+'</section>'+
+  '<section class="box an3"><h2>'+t('a_exp')+'</h2>'+rows(E,eo,exp,inc)+'</section>';
+}
+function setTab(n){
+  $('tab-home').hidden=n!=='home';$('tab-more').hidden=n!=='more';$('tab-plan').hidden=n!=='plan';$('tab-log').hidden=n!=='log';
+  [].forEach.call(document.querySelectorAll('[data-tab]'),function(b){b.setAttribute('aria-pressed',b.dataset.tab===n)});
+  if(n==='log'){autoFill();lrender()}else if(n==='home'){pullNative();homeRender()}else if(n==='more'){pullNative();moreRender()}else calc();
+}
+function init(){
+  if(!S.kw||!S.kw.length)S.kw=DEF_KW.slice();if(!S.pend)S.pend=[];ensureDates();$('dstart').value=S.start;$('dend').value=S.end;$('dsal').value=S.salDate;$('months').value=S.months;$('goal').value=S.goal||'';$('cur').value=S.cur;applyLang();setTab('home');
+}
+document.addEventListener('input',function(e){
+  var x=e.target;
+  if(x.id==='lm'){if(/^\d{4}-\d{2}$/.test(x.value)){cm=x.value;autoFill();lrender()}return}
+  else if(x.id==='lex'){(S.excl=S.excl||{})[cm]=x.checked;save();lcalc();lrows('income');return}
+  else if(x.id==='lnk')S.addLog=x.checked;
+  else if(x.id==='dsal')S.salDate=x.value||S.salDate;
+  else if(x.id==='dstart'||x.id==='dend'){S.start=$('dstart').value||S.start;S.end=$('dend').value||S.end;S.months=calcMonths();$('months').value=S.months}
+  else if(x.id==='months')S.months=x.value;
+  else if(x.id==='goal')S.goal=x.value;
+  else if(x.id==='cur')S.cur=x.value||'€';
+  else if(x.dataset.k){var it=S[x.dataset.k][x.dataset.i];it[x.dataset.f]=x.dataset.f==='v'?num(x.value):x.value}
+  else if(x.dataset.lk){if(S.filled&&S.filled[cm]){delete S.filled[cm];$('lfill').hidden=true}var li=getM()[x.dataset.lk][x.dataset.i],lf=x.dataset.f;li[lf]=lf==='v'?num(x.value):x.value;if(lf==='c'){if(x.value!=='custom')li.n='';save();lrows(x.dataset.lk);lcalc();return}save();lcalc();return}
+  else return;
+  save();calc();
+});
+document.addEventListener('click',function(e){
+  var x=e.target;
+  if(x.dataset.tab){setTab(x.dataset.tab)}
+  else if(x.id==='ladopt'){var av=logAvg();if(!av||!confirm(t('l_adoptc')))return;
+    var agg=function(f){var map={},order=[];av.ks.forEach(function(k){S.log[k][f].forEach(function(it){var cat=it.c&&it.c!=='custom'?it.c:'',nn=(it.n||'').trim()||t('unnamed'),key=cat?'c:'+cat:'n:'+nn.toLowerCase();if(!map[key]){map[key]=cat?{k:'c_'+cat,v:0}:{n:nn,v:0};order.push(key)}map[key].v+=num(it.v)})});return order.map(function(key){var o=map[key],r={v:Math.round(o.v/av.n*100)/100};if(o.k)r.k=o.k;else r.n=o.n;return r})};
+    S.income=agg('income');save();render('income');calc()}
+  else if(x.dataset.ladd){getM()[x.dataset.ladd].push({n:'',v:0});save();lrows(x.dataset.ladd);lcalc();var lr=document.querySelectorAll('#b-'+(x.dataset.ladd==='income'?'linc':'lexp')+' .row .n');lr[lr.length-1].focus()}
+  else if(x.dataset.ldel){getM()[x.dataset.ldel].splice(x.dataset.i,1);var m0=getM();if(!m0.income.length&&!m0.expense.length)(S.noFill=S.noFill||{})[cm]=true;save();lrows(x.dataset.ldel);lcalc()}
+  else if(x.dataset.open){cm=x.dataset.open;lrender();window.scrollTo(0,0)}
+  else if(x.id==='mprev'||x.id==='mnext'){shiftM(x.id==='mprev'?-1:1)}
+  else if(x.id==='lcopy'){var mm=S.log[cm];if(mm&&(mm.income.length||mm.expense.length)&&!confirm(t('l_copyc')))return;mm=getM();mm.income=S.income.map(function(i){var c=catOf(i);return{c:c,n:c==='custom'?nm(i):'',v:num(i.v)}});var pk=allKeys().filter(function(k){return k<cm}).pop();mm.expense=(pk?S.log[pk].expense:S.expense).map(function(i){var c=i.c!==undefined?i.c:({rent:'rent',food:'groceries',transport:'transport',bills:'subscriptions'}[i.k]||(i.n?'custom':''));return{c:c,n:c==='custom'?(i.n||nm(i)):'',v:num(i.v)}});save();lrender()}
+  else if(x.id==='ldel'){if(confirm(t('l_delc'))){delete S.log[cm];(S.noFill=S.noFill||{})[cm]=true;if(S.filled)delete S.filled[cm];save();lrender()}}
+  else if(x.dataset.lang){S.lang=x.dataset.lang;save();applyLang()}
+  else if(x.dataset.add){S[x.dataset.add].push({n:'',v:0});render(x.dataset.add);save();calc();
+    var rows=document.querySelectorAll('#b-'+x.dataset.add+' .row .n');rows[rows.length-1].focus()}
+  else if(x.dataset.del){S[x.dataset.del].splice(x.dataset.i,1);render(x.dataset.del);save();calc()}
+  else if(x.id==='reset'){if(confirm(t('confirm'))){var l=S.lang;S=JSON.parse(JSON.stringify(def));S.lang=l;save();init()}}
+});
+/* ====== v2: Home dashboard, More (notifications, backup, sync) ====== */
+Object.assign(T.ar,{
+ tab_home:'الرئيسية',tab_more:'المزيد',
+ h_now:'المتوفر الآن',h_end:'الرصيد المتوقع',h_net:'صافي الشهر (متوسط)',
+ h_cf:'التدفق النقدي',h_cfn:'الدخل والمصاريف لآخر 6 أشهر (الأشهر المستبعدة بلون أخف)',h_inc:'الدخل',h_exp:'المصاريف',
+ h_dist:'توزيع المصاريف',h_top:'أعلى المصاريف',h_none:'سجّل شهرًا في السجل الشهري لتظهر الرسوم هنا.',h_pend:'لديك {n} إشعار بنكي بانتظار التأكيد',h_total:'الإجمالي',h_other:'أخرى',
+ m_notif:'التقاط إشعارات البنك',m_nn:'تطبيق الأندرويد يقرأ الإشعارات التي تحتوي على إحدى كلمات الكشف أدناه ويقترح تسجيلها، ولا يُسجَّل شيء قبل تأكيدك. الإشعارات لا تُرسل إلى أي جهة.',
+ m_web:'قراءة إشعارات التطبيقات الأخرى متاحة فقط داخل تطبيق الأندرويد (APK). في المتصفح يمكنك تجربة الميزة بالمحاكاة أدناه.',
+ m_acc_on:'✅ إذن الوصول إلى الإشعارات ممنوح',m_acc_off:'⚠️ إذن الوصول إلى الإشعارات غير ممنوح',m_grant:'منح الإذن من إعدادات الهاتف',
+ m_kw:'كلمات الكشف',m_kwadd:'كلمة جديدة',m_add:'+ إضافة',
+ m_pend:'إشعارات بانتظار التأكيد',m_nopend:'لا توجد إشعارات بانتظار التأكيد.',m_rec:'تسجيل',m_ign:'تجاهل',m_exp1:'مصروف',m_inc1:'دخل',
+ m_sim:'تجربة بالمحاكاة',m_simph:'مثال: Kartenzahlung REWE 23,40 EUR',m_simgo:'محاكاة إشعار',m_nokw:'لا توجد كلمة كشف مطابقة في النص.',m_noamt:'لم أجد مبلغًا صالحًا.',
+ m_last:'آخر ما سُجّل من الإشعارات',m_done:'تم التسجيل',
+ b_title:'نسخ احتياطي واستيراد',b_exp:'تصدير البيانات',b_copy:'نسخ',b_share:'مشاركة',b_imp:'استيراد',b_impph:'الصق نص النسخة الاحتياطية هنا',b_file:'أو اختر ملف .json',b_ok:'تم الاستيراد',b_bad:'النص ليس نسخة احتياطية صالحة',b_conf:'سيتم استبدال بياناتك الحالية بالنسخة المستوردة. متابعة؟',b_copied:'تم النسخ',
+ s_title:'المزامنة بين الأجهزة (Supabase)',s_note:'أنشئ مشروعًا مجانيًا على supabase.com، ونفّذ أمر SQL أدناه مرة واحدة في SQL Editor، ثم الصق رابط المشروع ومفتاح anon فقط (ليس service role).',s_url:'رابط المشروع',s_key:'مفتاح anon',s_mail:'البريد الإلكتروني',s_pw:'كلمة المرور',s_sign:'إنشاء حساب',s_login:'تسجيل الدخول',s_up:'رفع بياناتي',s_down:'استرجاع من السحابة',s_out:'خروج',
+ s_in:'● متصل: ',s_off:'● غير متصل',s_cfg:'أدخل رابط المشروع والمفتاح أولًا',s_need:'سجّل الدخول أولًا',s_signok:'تم إنشاء الحساب. إن طُلب تأكيد البريد فأكّده ثم سجّل الدخول.',s_loginok:'تم تسجيل الدخول',s_upok:'تم رفع بياناتك',s_dlok:'تم استرجاع بياناتك',s_dlc:'سيتم استبدال بياناتك الحالية بنسخة السحابة. متابعة؟',s_none:'لا توجد نسخة في السحابة بعد',s_err:'خطأ: ',s_sql:'أمر SQL (مرة واحدة)',s_last:'آخر مزامنة: '
+});
+Object.assign(T.de,{
+ tab_home:'Start',tab_more:'Mehr',
+ h_now:'Aktuell verfügbar',h_end:'Erwarteter Stand',h_net:'Monatsnetto (Ø)',
+ h_cf:'Cashflow',h_cfn:'Einnahmen und Ausgaben der letzten 6 Monate (ausgeschlossene Monate blasser)',h_inc:'Einnahmen',h_exp:'Ausgaben',
+ h_dist:'Verteilung der Ausgaben',h_top:'Größte Ausgaben',h_none:'Erfasse einen Monat im Monatsbuch, dann erscheinen hier die Diagramme.',h_pend:'{n} Bank-Benachrichtigung(en) warten auf Bestätigung',h_total:'Gesamt',h_other:'Sonstige',
+ m_notif:'Bank-Benachrichtigungen erfassen',m_nn:'Die Android-App liest Benachrichtigungen mit einem der Stichwörter unten und schlägt eine Buchung vor. Nichts wird ohne deine Bestätigung gebucht. Die Benachrichtigungen werden an niemanden gesendet.',
+ m_web:'Benachrichtigungen anderer Apps kann nur die Android-App (APK) lesen. Im Browser kannst du die Funktion unten simulieren.',
+ m_acc_on:'✅ Zugriff auf Benachrichtigungen erteilt',m_acc_off:'⚠️ Zugriff auf Benachrichtigungen nicht erteilt',m_grant:'Zugriff in den Telefon-Einstellungen erteilen',
+ m_kw:'Stichwörter',m_kwadd:'Neues Stichwort',m_add:'+ Hinzufügen',
+ m_pend:'Warten auf Bestätigung',m_nopend:'Keine Benachrichtigungen warten auf Bestätigung.',m_rec:'Buchen',m_ign:'Ignorieren',m_exp1:'Ausgabe',m_inc1:'Einnahme',
+ m_sim:'Simulation zum Testen',m_simph:'z. B. Kartenzahlung REWE 23,40 EUR',m_simgo:'Benachrichtigung simulieren',m_nokw:'Kein passendes Stichwort im Text.',m_noamt:'Kein gültiger Betrag gefunden.',
+ m_last:'Zuletzt aus Benachrichtigungen gebucht',m_done:'Gebucht',
+ b_title:'Backup und Import',b_exp:'Daten exportieren',b_copy:'Kopieren',b_share:'Teilen',b_imp:'Importieren',b_impph:'Backup-Text hier einfügen',b_file:'oder .json-Datei wählen',b_ok:'Import abgeschlossen',b_bad:'Der Text ist kein gültiges Backup',b_conf:'Deine aktuellen Daten werden durch das importierte Backup ersetzt. Fortfahren?',b_copied:'Kopiert',
+ s_title:'Sync zwischen Geräten (Supabase)',s_note:'Lege ein kostenloses Projekt auf supabase.com an, führe den SQL-Befehl unten einmal im SQL Editor aus und füge dann Projekt-URL und nur den anon-Key ein (nicht den service role).',s_url:'Projekt-URL',s_key:'anon-Key',s_mail:'E-Mail',s_pw:'Passwort',s_sign:'Konto erstellen',s_login:'Anmelden',s_up:'Meine Daten hochladen',s_down:'Aus der Cloud laden',s_out:'Abmelden',
+ s_in:'● Verbunden: ',s_off:'● Nicht verbunden',s_cfg:'Zuerst Projekt-URL und Key eingeben',s_need:'Bitte zuerst anmelden',s_signok:'Konto erstellt. Falls eine E-Mail-Bestätigung verlangt wird, bestätige sie und melde dich an.',s_loginok:'Angemeldet',s_upok:'Daten hochgeladen',s_dlok:'Daten geladen',s_dlc:'Deine aktuellen Daten werden durch die Cloud-Version ersetzt. Fortfahren?',s_none:'Noch kein Backup in der Cloud',s_err:'Fehler: ',s_sql:'SQL-Befehl (einmalig)',s_last:'Letzter Sync: '
+});
+
+var NB=window.MizanNative||null;
+function natCall(m,a){try{if(NB&&typeof NB[m]==='function')return NB[m].apply(NB,a||[])}catch(e){}return null}
+var DEF_KW=['Kartenzahlung','Lastschrift','Abbuchung','Zahlung','Umsatz','purchase','debit','payment','withdrawal','خصم','شراء','سحب','مدين','دفع'];
+if(!S.kw||!S.kw.length)S.kw=DEF_KW.slice();
+if(!S.pend)S.pend=[];
+
+function mzToast(m){var e=$('mzToast');if(!e){e=document.createElement('div');e.id='mzToast';document.body.appendChild(e)}e.textContent=m;e.className='show';clearTimeout(mzToast.h);mzToast.h=setTimeout(function(){e.className=''},2800)}
+function mkey(ts){var d=new Date(ts);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)}
+function catLabel(list,it){var c=it.c&&it.c!=='custom'?it.c:'';if(c){var ci=catInfo(list,c);return (ci.em?ci.em+' ':'')+t('c_'+c)}return (it.n||'').trim()||t('unnamed')}
+
+/* ---- Home ---- */
+function expDist(k){
+  var m=S.log[k],map={},ord=[];
+  m.expense.forEach(function(it){var c=it.c&&it.c!=='custom'?it.c:'',key=c?'c:'+c:'n:'+((it.n||'').trim().toLowerCase()||'?');
+    if(!map[key]){var ci=catInfo('expense',c);map[key]={lab:catLabel('expense',it),col:ci.col||'#94a3b8',v:0};ord.push(key)}
+    map[key].v+=num(it.v)});
+  var arr=ord.map(function(x){return map[x]}).filter(function(o){return o.v>0}).sort(function(a,b){return b.v-a.v});
+  if(arr.length>6){var rest=arr.slice(5),sm=rest.reduce(function(s,o){return s+o.v},0);arr=arr.slice(0,5);arr.push({lab:t('h_other'),col:'#94a3b8',v:sm})}
+  return arr}
+function homeRender(){
+  var el=$('tab-home');if(!el)return;
+  var now=sum(S.assets)+linkNet(),inc=incPlan(),exp=expPlan(),pl=plan(now,inc,exp);
+  var ks=allKeys(),h=pgHead('home'),pend=(S.pend||[]).length;
+  if(pend)h+='<button class="pend" data-go="more">🔔 '+t('h_pend').replace('{n}',pend)+'</button>';
+  var m1=S.log[cm]||{income:[],expense:[]},net1=sum(m1.income)-sum(m1.expense),fcc=fcCalc();
+  h+='<div class="kt"><div class="k k2"><small>'+t('h_net1')+' '+mlabel(cm)+'</small><b class="num">'+fmt(net1)+'</b></div><div class="k k1"><small>'+t('h_now')+'</small><b class="num">'+fmt(now)+'</b></div><div class="k k3"><small>'+t('h_end')+' ('+fcc.months+' '+unitAcc(fcc.months)+')</small><b class="num">'+fmt(fcc.end)+'</b>'+(fcc.selN?'<span class="eq num">'+fmt(fcc.base)+' + '+fmt(fcc.sel)+'</span>':'')+'</div></div>';
+  if(fcc.show)h+='<section class="box an1"><h2>'+t('fc_title')+'</h2><ul class="sum"><li><span>'+t('fc_tinc')+'</span><span class="num">'+fmt(fcc.incT)+'</span></li><li><span>'+t('fc_texp')+'</span><span class="num">'+fmt(fcc.expT)+'</span></li>'+(fcc.selN?'<li><span>'+t('fc_selt')+'</span><span class="num">'+fmt(fcc.sel)+'</span></li>':'')+'<li class="fin"><span>'+t('fc_net')+'</span><span class="num">'+fmt(fcc.net)+'</span></li></ul><div class="hint" style="margin-top:6px">'+t('fc_note')+'</div></section>';
+  if(!ks.length){el.innerHTML=h+'<section class="box an1"><div class="hint">'+t('h_none')+'</div></section>';return}
+  var cf=ks.slice(-6),mx=1;
+  cf.forEach(function(k){var m=S.log[k];mx=Math.max(mx,sum(m.income),sum(m.expense))});
+  h+='<section class="box an2"><h2>'+t('h_cf')+'</h2><div class="hint">'+t('h_cfn')+'</div><div class="cf">'+cf.map(function(k){var m=S.log[k],i=sum(m.income),e=sum(m.expense),p=k.split('-');
+    return '<div class="cfc'+(isExcl(k)?' dim':'')+'"><div class="cfb"><i class="ci" style="height:'+Math.round(i/mx*100)+'%"></i><i class="ce" style="height:'+Math.round(e/mx*100)+'%"></i></div><small>'+p[1]+'/'+p[0].slice(2)+'</small></div>'}).join('')+'</div>'+
+    '<div class="lg" style="margin-top:8px"><span><b style="background:#35b07f"></b>'+t('h_inc')+'</span><span><b style="background:#e5667a"></b>'+t('h_exp')+'</span></div></section>';
+  var hk=ks.filter(function(k){return k<=curKey()}).pop()||ks[ks.length-1],arr=expDist(hk),tot=arr.reduce(function(s,o){return s+o.v},0);
+  if(tot>0){
+    var acc=0,stops=arr.map(function(o){var a=acc/tot*100;acc+=o.v;var b=acc/tot*100;return o.col+' '+a.toFixed(2)+'% '+b.toFixed(2)+'%'}).join(',');
+    h+='<section class="box an3"><h2>'+t('h_dist')+' · '+mlabel(hk)+'</h2><div class="dn"><div class="donut" style="background:conic-gradient('+stops+')"><b>'+fmt(tot)+'</b></div><div class="lgd">'+arr.map(function(o){return '<div><span><i style="background:'+o.col+'"></i>'+esc(o.lab)+'</span><span class="num">'+fp(o.v/tot*100)+'</span></div>'}).join('')+'</div></div></section>';
+    var top=S.log[hk].expense.filter(function(it){return num(it.v)>0}).sort(function(a,b){return num(b.v)-num(a.v)}).slice(0,5);
+    h+='<section class="box an1"><h2>'+t('h_top')+'</h2>'+top.map(function(it){return '<div class="tp"><span>'+esc(catLabel('expense',it))+'</span><b class="num">'+fmt(num(it.v))+'</b></div>'}).join('')+'</section>';
+  }
+  el.innerHTML=h}
+
+/* ---- Notification capture ---- */
+function parseNum(s){
+  s=String(s).replace(/\s/g,'');var lc=s.lastIndexOf(','),ld=s.lastIndexOf('.');
+  if(lc>-1&&ld>-1){s=lc>ld?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'')}
+  else if(lc>-1){s=/,\d{1,2}$/.test(s)?s.replace(',','.'):s.replace(/,/g,'')}
+  else if(ld>-1&&!/\.\d{1,2}$/.test(s)){s=s.replace(/\./g,'')}
+  var v=parseFloat(s);return isFinite(v)?v:null}
+function extractAmount(txt){
+  var cur='(?:€|EUR|USD|\\$|SAR|SR|﷼|ر\\.?\\s?س)',nb='([0-9][0-9.,\\s]*[0-9]|[0-9])';
+  var m=txt.match(new RegExp(cur+'\\s*'+nb,'i'))||txt.match(new RegExp(nb+'\\s*'+cur,'i'))||txt.match(/(?<![\d.,])(\d+[.,]\d{2})(?![\d.,]?\d)/);
+  return m?parseNum(m[1]):null}
+var INC_RE=/gutschrift|eingang|erhalten|received|deposit|credited|إيداع|وارد|استلام|راتب|salary|gehalt/i;
+function matchKw(txt){var l=txt.toLowerCase();return S.kw.some(function(k){return k&&l.indexOf(k.toLowerCase())>-1})}
+function addPending(n){
+  var txt=((n.title?n.title+' — ':'')+(n.text||'')).trim(),id=String(n.id||Date.now()+Math.random());
+  if(S.pend.some(function(p){return p.id===id}))return false;
+  S.pend.unshift({id:id,ts:n.ts||Date.now(),pkg:n.pkg||'',text:txt.slice(0,260),amt:extractAmount(txt)||0,type:INC_RE.test(txt)?'income':'expense'});
+  if(S.pend.length>50)S.pend.length=50;save();return true}
+function pullNative(){
+  var raw=natCall('getPending');if(!raw)return;
+  try{var arr=JSON.parse(raw),ids=[];arr.forEach(function(n){ids.push(n.id);addPending(n)});if(ids.length){natCall('ack',[JSON.stringify(ids)]);homeRender();if(!$('tab-more').hidden)moreRender()}}catch(e){}}
+function prefillMonth(k){
+  var m=S.log[k];if(m&&(m.income.length||m.expense.length))return m;
+  var prev=Object.keys(S.log).filter(function(x){var y=S.log[x];return x<k&&(y.income.length||y.expense.length)}).sort().pop();
+  m=S.log[k]=S.log[k]||{income:[],expense:[]};
+  if(prev&&!(S.noFill&&S.noFill[k])){var cp=function(a){return a.map(function(i){var o={v:num(i.v)};if(i.c!==undefined)o.c=i.c;if(i.n)o.n=i.n;return o})};m.income=cp(S.log[prev].income);m.expense=cp(S.log[prev].expense);(S.filled=S.filled||{})[k]=prev}
+  return m}
+function recordPending(id){
+  var card=document.querySelector('[data-pid="'+id+'"]'),p=S.pend.filter(function(x){return x.id===id})[0];if(!card||!p)return;
+  var type=card.querySelector('.ptype').value,amt=num(card.querySelector('.pamt').value),cat=card.querySelector(type==='income'?'.pcat-i':'.pcat-e').value;
+  if(!(amt>0)){mzToast(t('m_noamt'));return}
+  var m=prefillMonth(mkey(p.ts));m[type].push({c:cat,v:amt,auto:1});
+  S.auto=S.auto||[];S.auto.unshift({ts:p.ts,amt:amt,type:type,cat:cat});if(S.auto.length>20)S.auto.length=20;
+  S.pend=S.pend.filter(function(x){return x.id!==id});save();mzToast(t('m_done'));refreshAll()}
+function refreshAll(){homeRender();moreRender();if(!$('tab-log').hidden)lrender()}
+function optsFor(k,sel){return (k==='income'?CATS_I:CATS_E).map(function(c){return '<option value="'+c[0]+'"'+(c[0]===sel?' selected':'')+'>'+catInfo(k,c[0]).em+' '+esc(t('c_'+c[0]))+'</option>'}).join('')}
+
+/* ---- Backup ---- */
+function exportJson(){return JSON.stringify({app:'mizan',v:2,exported:new Date().toISOString(),data:S},null,1)}
+function replaceState(obj){
+  var nS=JSON.parse(JSON.stringify(def));Object.keys(obj).forEach(function(k){nS[k]=obj[k]});
+  if(['ar','de','en'].indexOf(nS.lang)<0)nS.lang='ar';if(!nS.log)nS.log={};if(!nS.kw||!nS.kw.length)nS.kw=DEF_KW.slice();if(!nS.pend)nS.pend=[];
+  S=nS;save();natCall('setKeywords',[JSON.stringify(S.kw)]);init()}
+function importText(txt){
+  var o;try{o=JSON.parse(txt)}catch(e){mzToast(t('b_bad'));return}
+  var d=o&&o.data&&o.data.assets?o.data:o;if(!d||!d.assets||!d.log){mzToast(t('b_bad'));return}
+  if(!confirm(t('b_conf')))return;replaceState(d);mzToast(t('b_ok'))}
+function copyText(s){
+  try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(s);mzToast(t('b_copied'));return}}catch(e){}
+  var ta=$('mzExpOut');if(ta){ta.hidden=false;ta.select();try{document.execCommand('copy');mzToast(t('b_copied'))}catch(e){}}}
+
+/* ---- Cloud sync (Supabase REST) ---- */
+var SYNC_SQL="create table if not exists public.mizan_data (\n  user_id uuid primary key references auth.users(id) on delete cascade,\n  data jsonb not null,\n  updated_at timestamptz not null default now()\n);\nalter table public.mizan_data enable row level security;\ncreate policy \"own select\" on public.mizan_data for select using (auth.uid() = user_id);\ncreate policy \"own insert\" on public.mizan_data for insert with check (auth.uid() = user_id);\ncreate policy \"own update\" on public.mizan_data for update using (auth.uid() = user_id) with check (auth.uid() = user_id);";
+var mzPw='';
+function scfg(){try{return JSON.parse(localStorage.getItem('mizan.sync.cfg')||'{}')}catch(e){return{}}}
+function sses(){try{return JSON.parse(localStorage.getItem('mizan.sync.ses')||'null')}catch(e){return null}}
+function setSes(s){try{if(s)localStorage.setItem('mizan.sync.ses',JSON.stringify(s));else localStorage.removeItem('mizan.sync.ses')}catch(e){}}
+async function sb(path,opt,token){
+  var c=scfg();if(!c.url||!c.key)throw new Error(t('s_cfg'));
+  opt=opt||{};opt.headers=Object.assign({apikey:c.key,'Content-Type':'application/json'},opt.headers||{});
+  if(token)opt.headers.Authorization='Bearer '+token;
+  var r=await fetch(c.url.replace(/\/+$/,'')+path,opt),txt=await r.text(),j=null;try{j=txt?JSON.parse(txt):null}catch(e){}
+  if(!r.ok)throw new Error((j&&(j.msg||j.message||j.error_description||j.error))||('HTTP '+r.status));
+  return j}
+function storeSes(j){setSes({at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,uid:j.user&&j.user.id,email:j.user&&j.user.email})}
+async function token(){
+  var s=sses();if(!s)throw new Error(t('s_need'));
+  if(s.exp-60000<Date.now()){var j=await sb('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:s.rt})});storeSes(j);s=sses()}
+  return s}
+async function syncAct(a){
+  try{
+    var em=($('mzMail')||{}).value||'',pw=mzPw;
+    if(a==='sign'){if(!em||!pw)throw new Error(t('s_cfg'));await sb('/auth/v1/signup',{method:'POST',body:JSON.stringify({email:em,password:pw})});mzToast(t('s_signok'))}
+    else if(a==='login'){if(!em||!pw)throw new Error(t('s_cfg'));storeSes(await sb('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email:em,password:pw})}));mzToast(t('s_loginok'));moreRender()}
+    else if(a==='up'){var s=await token();await sb('/rest/v1/mizan_data?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:s.uid,data:S,updated_at:new Date().toISOString()})},s.at);try{localStorage.setItem('mizan.sync.last',new Date().toISOString())}catch(e){}mzToast(t('s_upok'));moreRender()}
+    else if(a==='down'){var s2=await token(),rows=await sb('/rest/v1/mizan_data?select=data,updated_at&user_id=eq.'+s2.uid,{method:'GET'},s2.at);
+      if(!rows||!rows.length||!rows[0].data||!rows[0].data.assets){mzToast(t('s_none'));return}
+      if(!confirm(t('s_dlc')))return;replaceState(rows[0].data);try{localStorage.setItem('mizan.sync.last',new Date().toISOString())}catch(e){}mzToast(t('s_dlok'))}
+    else if(a==='out'){setSes(null);moreRender()}
+  }catch(e){mzToast(t('s_err')+e.message)}}
+
+/* ---- More tab ---- */
+function srow(title,desc,ctrl){return '<div class="srow"><div><h3>'+title+'</h3>'+(desc?'<p>'+desc+'</p>':'')+'</div>'+ctrl+'</div>'}
+function moreRender(){
+  var el=$('tab-more');if(!el)return;
+  var cfg=scfg(),ses=sses(),h=pgHead('more');
+  var co=function(sym,code){return '<option value="'+sym+'"'+(S.cur===sym?' selected':'')+'>'+code+' '+sym+'</option>'};
+  h+='<section class="box mzbox-g">'+
+    srow(t('st_cur'),t('st_curd'),'<select class="sel" id="mzCur">'+co('\u20ac','EUR')+co('$','USD')+co('\ufdfc','SAR')+(['\u20ac','$','\ufdfc'].indexOf(S.cur)<0?'<option value="'+esc(S.cur)+'" selected>'+esc(S.cur)+'</option>':'')+'</select>')+
+    srow(t('st_lang'),t('st_langd'),'<select class="sel" id="mzLang"><option value="ar"'+(S.lang==='ar'?' selected':'')+'>\u0627\u0644\u0639\u0631\u0628\u064a\u0629</option><option value="de"'+(S.lang==='de'?' selected':'')+'>Deutsch</option><option value="en"'+(S.lang==='en'?' selected':'')+'>English</option></select>')+'</section>';
+  h+='<section class="box mzbox-g"><h2>🔄 '+t('up_title')+'</h2><div class="hint">'+t('up_desc')+'</div><div class="hint" style="margin:6px 0">'+t('up_ver')+': <b class="num">'+(window.__mzCur||1)+'</b></div><input id="mzUpUrl" class="mz-in num" dir="ltr" placeholder="https://raw.githubusercontent.com/USER/REPO/main/app/src/main/assets/index.html" value="'+esc(updUrl())+'"><div class="pr" style="margin-top:8px"><button class="add" data-act="upchk">'+t('up_check')+'</button></div></section>';
+  h+='<section class="box mzbox-b"><h2>💾 '+t('b_title')+'</h2><div class="pr"><button class="add" data-act="exp">'+t('b_exp')+'</button></div>'+
+    '<div id="mzExpBox" hidden><textarea id="mzExpOut" class="mzta" readonly></textarea><div class="pr"><button class="ghost" data-act="copy">'+t('b_copy')+'</button>'+(NB?'<button class="ghost" data-act="share">'+t('b_share')+'</button>':'')+'</div></div>'+
+    '<textarea id="mzImpTxt" class="mzta" style="margin-top:10px" placeholder="'+esc(t('b_impph'))+'"></textarea><div class="pr" style="align-items:center"><button class="add" data-act="imp" style="flex:none">'+t('b_imp')+'</button><label class="hint" style="flex:1">'+t('b_file')+' <input type="file" id="mzFile" accept=".json,application/json"></label></div></section>';
+  h+='<section class="box mzbox-g">'+srow(t('st_priv'),t('st_privd'),'<span class="sdot">'+(ses?t('st_cloud'):t('st_local'))+'</span>')+'<button class="danger" id="reset">'+t('reset')+'</button></section>';
+  h+='<section class="box mzbox-s"><h2>☁️ '+t('s_title')+'</h2><div class="hint">'+t('s_note')+'</div>'+
+    '<details style="margin:8px 0"><summary class="hint">'+t('s_sql')+'</summary><pre>'+esc(SYNC_SQL)+'</pre><button class="ghost" data-act="copysql">'+t('b_copy')+'</button></details>'+
+    '<input id="mzUrl" class="mz-in num" placeholder="'+esc(t('s_url'))+' (https://xxxx.supabase.co)" value="'+esc(cfg.url||'')+'">'+
+    '<input id="mzKey" class="mz-in num" placeholder="'+esc(t('s_key'))+'" value="'+esc(cfg.key||'')+'">'+
+    '<input id="mzMail" class="mz-in num" type="email" placeholder="'+esc(t('s_mail'))+'" value="'+esc(cfg.mail||'')+'">'+
+    '<input id="mzPw" class="mz-in num" type="password" placeholder="'+esc(t('s_pw'))+'" value="'+esc(mzPw)+'" autocomplete="current-password">'+
+    '<div class="hint" style="margin:6px 0">'+(ses?t('s_in')+esc(ses.email||''):t('s_off'))+(function(){var l='';try{l=localStorage.getItem('mizan.sync.last')||''}catch(e){}return l?' · '+t('s_last')+fdate(new Date(l)):''})()+'</div>'+
+    '<div class="pr"><button class="ghost" data-act="s-sign">'+t('s_sign')+'</button><button class="add" data-act="s-login">'+t('s_login')+'</button></div>'+
+    '<div class="pr"><button class="add" data-act="s-up">'+t('s_up')+'</button><button class="ghost" data-act="s-down">'+t('s_down')+'</button><button class="ghost" data-act="s-out">'+t('s_out')+'</button></div></section>';
+  h+='<section class="box mzbox-n"><h2>🔔 '+t('m_notif')+'</h2><div class="hint">'+t('m_nn')+'</div>';
+  if(NB){var on=!!natCall('hasAccess');h+='<div class="note '+(on?'ok':'bad')+'">'+(on?t('m_acc_on'):t('m_acc_off'))+'</div>'+(on?'':'<button class="add" data-act="grant" style="margin-top:8px">'+t('m_grant')+'</button>')}
+  else h+='<div class="note" style="background:rgba(14,165,233,.12)">'+t('m_web')+'</div>';
+  h+='<h2 style="margin-top:14px">'+t('m_kw')+'</h2><div class="chips">'+S.kw.map(function(k,i){return '<span class="chip">'+esc(k)+'<button data-act="rmkw" data-i="'+i+'" aria-label="x">×</button></span>'}).join('')+'</div>'+
+    '<div class="pr"><input id="mzKw" class="mz-in" placeholder="'+esc(t('m_kwadd'))+'"><button class="add" data-act="addkw" style="flex:none">'+t('m_add')+'</button></div>';
+  h+='<h2 style="margin-top:14px">'+t('m_pend')+' ('+S.pend.length+')</h2>';
+  if(!S.pend.length)h+='<div class="hint">'+t('m_nopend')+'</div>';
+  S.pend.forEach(function(p){
+    h+='<div class="pc" data-pid="'+esc(p.id)+'"><div class="pt">'+esc(p.text)+'</div><div class="pm">'+(p.pkg?esc(p.pkg)+' · ':'')+fdate(new Date(p.ts))+'</div>'+
+    '<div class="pr"><select class="ptype sel"><option value="expense"'+(p.type==='expense'?' selected':'')+'>'+t('m_exp1')+'</option><option value="income"'+(p.type==='income'?' selected':'')+'>'+t('m_inc1')+'</option></select><input class="pamt num" type="number" inputmode="decimal" value="'+(p.amt||'')+'" placeholder="0"></div>'+
+    '<div class="pr"><select class="pcat pcat-e sel"'+(p.type==='expense'?'':' hidden')+'>'+optsFor('expense','other')+'</select><select class="pcat pcat-i sel"'+(p.type==='income'?'':' hidden')+'>'+optsFor('income','i_salary')+'</select></div>'+
+    '<div class="pr"><button class="add" data-act="rec" data-id="'+esc(p.id)+'">✅ '+t('m_rec')+'</button><button class="ghost" data-act="ign" data-id="'+esc(p.id)+'">'+t('m_ign')+'</button></div></div>'});
+  if((S.auto||[]).length)h+='<h2 style="margin-top:14px">'+t('m_last')+'</h2>'+S.auto.slice(0,5).map(function(a){return '<div class="tp"><span>'+fdate(new Date(a.ts))+' · '+esc(t('c_'+a.cat))+'</span><b class="num">'+(a.type==='income'?'+':'−')+fmt(a.amt)+'</b></div>'}).join('');
+  h+='<h2 style="margin-top:14px">'+t('m_sim')+'</h2><textarea id="mzSim" class="mzta" placeholder="'+esc(t('m_simph'))+'"></textarea><button class="add" data-act="sim" style="margin-top:6px">'+t('m_simgo')+'</button></section>';
+  el.innerHTML=h}
+
+document.addEventListener('click',function(e){
+  var b=e.target.closest?e.target.closest('[data-act],[data-go]'):null;if(!b)return;
+  if(b.dataset.go){setTab(b.dataset.go);return}
+  var a=b.dataset.act;
+  if(a==='grant')natCall('openAccess');
+  else if(a==='addkw'){var v=($('mzKw').value||'').trim();if(v&&S.kw.indexOf(v)<0){S.kw.push(v);save();natCall('setKeywords',[JSON.stringify(S.kw)]);moreRender()}}
+  else if(a==='rmkw'){S.kw.splice(+b.dataset.i,1);save();natCall('setKeywords',[JSON.stringify(S.kw)]);moreRender()}
+  else if(a==='rec')recordPending(b.dataset.id);
+  else if(a==='ign'){S.pend=S.pend.filter(function(x){return x.id!==b.dataset.id});save();refreshAll()}
+  else if(a==='sim'){var tx=($('mzSim').value||'').trim();if(!matchKw(tx)){mzToast(t('m_nokw'));return}if(!extractAmount(tx)){mzToast(t('m_noamt'));return}
+    addPending({id:'sim'+Date.now(),ts:Date.now(),pkg:'simulation',text:tx});refreshAll()}
+  else if(a==='exp'){$('mzExpOut').value=exportJson();$('mzExpBox').hidden=false}
+  else if(a==='copy'){copyText($('mzExpOut').value)}
+  else if(a==='copysql')copyText(SYNC_SQL);
+  else if(a==='share')natCall('share',['mizan-backup.json',$('mzExpOut').value]);
+  else if(a==='imp')importText($('mzImpTxt').value);
+  else if(a==='upchk')updCheck(true);
+  else if(a&&a.indexOf('s-')===0)syncAct(a.slice(2));
+});
+document.addEventListener('input',function(e){
+  var x=e.target;
+  if(x.id==='mzUrl'||x.id==='mzKey'||x.id==='mzMail'){var c=scfg();c[x.id==='mzUrl'?'url':x.id==='mzKey'?'key':'mail']=x.value.trim();try{localStorage.setItem('mizan.sync.cfg',JSON.stringify(c))}catch(er){}}
+  else if(x.id==='mzPw')mzPw=x.value;
+});
+document.addEventListener('change',function(e){
+  var x=e.target;
+  if(x.classList&&x.classList.contains('ptype')){var card=x.closest('.pc');card.querySelector('.pcat-e').hidden=x.value!=='expense';card.querySelector('.pcat-i').hidden=x.value!=='income'}
+  else if(x.id==='mzFile'&&x.files&&x.files[0]){x.files[0].text().then(function(tx){$('mzImpTxt').value=tx}).catch(function(){mzToast(t('b_bad'))});x.value=''}
+});
+/* ====== v3: tab headers, forecast, goal bar + chart, settings ====== */
+Object.assign(T.ar,{
+ tab_home:'الرئيسية',tab_log:'السجل',tab_plan:'التخطيط',tab_an:'التحليل',tab_more:'الإعدادات',
+ tt_home:'نظرة عامة',td_home:'تابع دخلك ومصاريفك ومدخراتك من مكان واحد.',
+ tt_log:'السجل الشهري',td_log:'أضف دخلك ومصاريفك وتابع صافي الشهر.',
+ tt_plan:'الخطة المالية',td_plan:'احسب كيف يمكن أن ينمو رصيدك مع الوقت.',
+ tt_an:'التحليل',td_an:'افهم نسبة راتبك وتكاليفك وتوفيرك.',
+ tt_more:'الإعدادات والبيانات',td_more:'تحكّم بالعملة واللغة، واحتفظ بنسخة احتياطية من بياناتك.',
+ h_net1:'صافي شهر',
+ l_src:'مصادر الدخل',l_exps:'المصاريف',l_sum:'ملخص الشهر',l_tinc:'إجمالي الدخل',l_texp:'إجمالي المصاريف',l_tnet:'الصافي الشهري',
+ fc_title:'توقع الأشهر المقبلة',fc_desc:'انسخ دخل ومصاريف الشهر المحدد لتقدير الأشهر القادمة. التوقع منفصل عن السجل الفعلي.',fc_copy:'نسخ قيم الشهر المحدد',fc_months:'عدد الأشهر القادمة',fc_inc:'الدخل الشهري المتوقع',fc_exp:'المصروف الشهري المتوقع',fc_tinc:'إجمالي الدخل المتوقع',fc_texp:'إجمالي المصاريف المتوقعة',fc_net:'إجمالي التوفير المتوقع',fc_end:'الرصيد المتوقع',fc_show:'إظهار التوقع في الرئيسية',fc_incl:'احتساب صافي التوقع ضمن الرصيد المعروض (تقديري فقط)',fc_note:'هذه أرقام تقديرية ولا تسجل كعمليات فعلية أو تغير أرصدة الحسابات.',
+ g_left:'المتبقي للوصول إلى الهدف',g_ok:'تم الوصول إلى الهدف',ch_title:'تطور الرصيد المتوقع',
+ st_cur:'العملة',st_curd:'عملة العرض',st_lang:'اللغة',st_langd:'لغة واجهة التطبيق',st_priv:'الخصوصية',st_privd:'بياناتك محفوظة محليًا على هذا الجهاز.',st_local:'● محليًا',st_cloud:'● متصل بالسحابة',reset:'حذف جميع البيانات'
+});
+Object.assign(T.de,{
+ tab_home:'Start',tab_log:'Monatsbuch',tab_plan:'Plan',tab_an:'Analyse',tab_more:'Einstellungen',
+ tt_home:'Überblick',td_home:'Behalte Einnahmen, Ausgaben und Ersparnisse an einem Ort im Blick.',
+ tt_log:'Monatsbuch',td_log:'Erfasse Einnahmen und Ausgaben und verfolge das Monatsergebnis.',
+ tt_plan:'Finanzplan',td_plan:'Berechne, wie dein Kontostand im Lauf der Zeit wächst.',
+ tt_an:'Analyse',td_an:'Verstehe Gehaltsanteil, Kostenquote und Sparquote.',
+ tt_more:'Einstellungen und Daten',td_more:'Steuere Währung und Sprache und sichere deine Daten.',
+ h_net1:'Netto',
+ l_src:'Einkommensquellen',l_exps:'Ausgaben',l_sum:'Monatsübersicht',l_tinc:'Gesamteinnahmen',l_texp:'Gesamtausgaben',l_tnet:'Monatsnetto',
+ fc_title:'Prognose der nächsten Monate',fc_desc:'Übernimm Einnahmen und Ausgaben des gewählten Monats, um die kommenden Monate zu schätzen. Die Prognose ist vom tatsächlichen Monatsbuch getrennt.',fc_copy:'Werte des gewählten Monats übernehmen',fc_months:'Anzahl kommender Monate',fc_inc:'Erwartetes Monatseinkommen',fc_exp:'Erwartete Monatsausgaben',fc_tinc:'Erwartete Gesamteinnahmen',fc_texp:'Erwartete Gesamtausgaben',fc_net:'Erwartete Gesamtersparnis',fc_end:'Erwarteter Stand',fc_show:'Prognose auf der Startseite zeigen',fc_incl:'Prognose-Netto im angezeigten Stand berücksichtigen (nur Schätzung)',fc_note:'Dies sind Schätzwerte; sie werden nicht als echte Buchungen erfasst und ändern keine Kontostände.',
+ g_left:'Noch bis zum Ziel',g_ok:'Ziel erreicht',ch_title:'Entwicklung des erwarteten Stands',
+ st_cur:'Währung',st_curd:'Anzeigewährung',st_lang:'Sprache',st_langd:'Sprache der App-Oberfläche',st_priv:'Datenschutz',st_privd:'Deine Daten werden lokal auf diesem Gerät gespeichert.',st_local:'● Lokal',st_cloud:'● Mit Cloud verbunden',reset:'Alle Daten löschen'
+});
+
+T.en={"title": "Mizan", "sub": "Enter what you have now plus your monthly income and expenses, and your expected savings will be calculated.", "endl": "Expected balance at the end of the period", "now": "Available now", "month": "Monthly net savings", "goal": "Savings goal", "goalleft": "Remaining to reach the goal", "goalok": "Goal reached", "settings": "Settings", "months": "Number of months (calculated)", "goalin": "Savings goal", "cur": "Currency", "h_assets": "Available now", "h_income": "Expected monthly income", "h_expense": "Monthly expenses", "add_assets": "+ Add amount", "add_income": "+ Add income", "add_expense": "+ Add expense", "tot": "Total: ", "mtot": "Monthly total: ", "h_sum": "Final summary", "u1": "Available now", "u2": "Total income in the period", "u3": "Total expenses in the period", "u4": "Expected savings in the period", "u5": "Final total (available + expected)", "reset": "Delete all data", "confirm": "Really delete all data?", "cash": "Cash", "bank": "Bank account", "salary": "Salary", "rent": "Rent", "food": "Food", "transport": "Transport", "bills": "Bills & subscriptions", "ph_assets": "e.g. Cash", "ph_income": "Income source", "ph_expense": "Expense type", "a_name": "Name", "a_amt": "Amount", "a_del": "Delete", "spend": "Expenses: ", "tab_plan": "Plan", "tab_log": "Monthly log", "l_inc": "Income", "l_exp": "Expenses", "l_net": "Net (saved this month)", "l_income": "Actual income", "l_expense": "Actual expenses", "l_add_in": "+ Add income", "l_add_ex": "+ Add expense", "l_copy": "Copy from plan and previous month", "l_copyc": "Your entries for this month will be replaced by the plan values. Continue?", "l_del": "Delete this month", "l_delc": "Delete this month's data?", "l_hist": "Month overview", "l_empty": "No months saved yet. Enter data for a month and it will appear here.", "l_total": "Total saved", "l_avg": "Monthly average", "l_vs": "Plan", "l_saved": "Changes are saved automatically on your device.", "k_title": "Link with the monthly log", "k_chk": "Add the net of logged months after the start month to the available amount (the start month and earlier are already included in the available amount)", "k_none": "Log some months in the monthly log and the link will appear here.", "k_net": "Net of logged months", "k_cnt": "Number of months", "k_avg": "Actual average (recent months)", "k_adopt": "Adopt average income into the plan", "k_base": "Starting balance", "k_log": "Monthly log", "l_adoptc": "The income items in the plan will be replaced by the actual average from the monthly log. Continue?", "unnamed": "Unnamed", "x_note": "Monthly expenses are calculated from the average of your actual expenses over the last 3 logged months. Record them in the monthly log.", "x_go": "Go to monthly log", "c_rent": "Rent", "c_groceries": "Groceries", "c_restaurants": "Restaurants & cafés", "c_transport": "Transport", "c_fuel": "Fuel", "c_car": "Car (maintenance)", "c_electricity": "Electricity", "c_water": "Water", "c_heating": "Heating & gas", "c_internet": "Internet", "c_phone": "Phone", "c_insurance": "Insurance", "c_health": "Health & medicine", "c_education": "Education & courses", "c_childcare": "Children", "c_clothing": "Clothing", "c_entertainment": "Leisure & entertainment", "c_travel": "Travel", "c_loans": "Installments & loans", "c_subscriptions": "Subscriptions", "c_gifts": "Gifts & donations", "c_taxes": "Taxes & fees", "c_other": "Other", "c_i_salary": "Salary", "c_i_bonus": "Bonus", "c_i_freelance": "Side income", "c_i_rental": "Rental income", "c_i_benefit": "Child benefit & allowances", "c_i_invest": "Investment income", "c_i_gift": "Gift", "c_custom": "✏️ Custom name…", "sel_exp": "Choose expense type", "sel_inc": "Choose income type", "r_title": "Result from the monthly log", "r_inc": "Avg. monthly income", "r_exp": "Avg. monthly expenses", "r_net": "Monthly savings", "r_from": "Calculated automatically from the average of the most recently logged months", "r_none": "No month logged yet. Enter income and expenses in the monthly log and the result will appear here.", "tab_an": "Analysis", "d_start": "Start date", "d_end": "End date", "a_sal": "Salary share of income", "a_cost": "Cost ratio", "a_save": "Savings rate", "a_split": "Split: costs and savings", "a_inc": "Income sources", "a_exp": "Expense breakdown", "a_basis": "Calculated from the average of recently logged months", "a_none": "No counted months yet (excluded months don't count). Log at least one month.", "a_ofinc": "of income", "a_r1": "Excellent: savings rate of 20% or more.", "a_r2": "Good: savings rate between 10% and 20%.", "a_r3": "Low: savings rate under 10% – review your biggest expenses.", "a_r4": "Deficit: expenses exceed income.", "d_sal": "First upcoming salary (repeats monthly on the same day)", "tl_title": "Balance timeline", "tl_note": "Salary arrives from the first salary date on the same day each month; expenses are spread over the days of the period.", "tl_start": "Current balance", "tl_sal": "Salary", "tl_exp": "Expenses up to this date", "tl_end": "End of period", "l_filled": "This month's items were filled in automatically from", "l_filled2": "Adjust them if needed – changes are saved.", "l_ex": "Exclude this month from calculations (already included in the available amount)", "l_exl": "excluded", "r_fb": "No counted months; estimate based on data from", "tab_home": "Home", "tab_more": "Settings", "h_now": "Available now", "h_end": "Expected balance", "h_net": "Monthly net (avg.)", "h_cf": "Cash flow", "h_cfn": "Income and expenses of the last 6 months (excluded months are dimmed)", "h_inc": "Income", "h_exp": "Expenses", "h_dist": "Expense breakdown", "h_top": "Biggest expenses", "h_none": "Log a month in the monthly log and the charts will appear here.", "h_pend": "{n} bank notification(s) awaiting confirmation", "h_total": "Total", "h_other": "Other", "m_notif": "Capture bank notifications", "m_nn": "The Android app reads notifications containing one of the keywords below and suggests an entry. Nothing is recorded without your confirmation. Notifications are not sent to anyone.", "m_web": "Only the Android app (APK) can read notifications from other apps. In the browser you can simulate the feature below.", "m_acc_on": "✅ Notification access granted", "m_acc_off": "⚠️ Notification access not granted", "m_grant": "Grant access in phone settings", "m_kw": "Keywords", "m_kwadd": "New keyword", "m_add": "+ Add", "m_pend": "Awaiting confirmation", "m_nopend": "No notifications awaiting confirmation.", "m_rec": "Record", "m_ign": "Ignore", "m_exp1": "Expense", "m_inc1": "Income", "m_sim": "Test simulation", "m_simph": "e.g. Card payment REWE 23.40 EUR", "m_simgo": "Simulate notification", "m_nokw": "No matching keyword in the text.", "m_noamt": "No valid amount found.", "m_last": "Recently recorded from notifications", "m_done": "Recorded", "b_title": "Backup and import", "b_exp": "Export data", "b_copy": "Copy", "b_share": "Share", "b_imp": "Import", "b_impph": "Paste backup text here", "b_file": "or choose a .json file", "b_ok": "Import completed", "b_bad": "The text is not a valid backup", "b_conf": "Your current data will be replaced by the imported backup. Continue?", "b_copied": "Copied", "s_title": "Sync between devices (Supabase)", "s_note": "Create a free project on supabase.com, run the SQL command below once in the SQL Editor, then enter the project URL and only the anon key (not the service role).", "s_url": "Project URL", "s_key": "anon key", "s_mail": "Email", "s_pw": "Password", "s_sign": "Create account", "s_login": "Sign in", "s_up": "Upload my data", "s_down": "Load from cloud", "s_out": "Sign out", "s_in": "● Connected: ", "s_off": "● Not connected", "s_cfg": "Enter project URL and key first", "s_need": "Please sign in first", "s_signok": "Account created. If email confirmation is required, confirm it and sign in.", "s_loginok": "Signed in", "s_upok": "Data uploaded", "s_dlok": "Data loaded", "s_dlc": "Your current data will be replaced by the cloud version. Continue?", "s_none": "No backup in the cloud yet", "s_err": "Error: ", "s_sql": "SQL command (one time)", "s_last": "Last sync: ", "tt_home": "Overview", "td_home": "Keep track of your income, expenses and savings in one place.", "tt_log": "Monthly log", "td_log": "Add your income and expenses and follow the month's net.", "tt_plan": "Financial plan", "td_plan": "Calculate how your balance can grow over time.", "tt_an": "Analysis", "td_an": "Understand your salary share, costs and savings rate.", "tt_more": "Settings and data", "td_more": "Control currency and language, and back up your data.", "h_net1": "Net of", "l_src": "Income sources", "l_exps": "Expenses", "l_sum": "Month summary", "l_tinc": "Total income", "l_texp": "Total expenses", "l_tnet": "Monthly net", "fc_title": "Forecast for coming months", "fc_desc": "Copy the income and expenses of the selected month to estimate the coming months. The forecast is separate from the actual log.", "fc_copy": "Copy selected month's values", "fc_months": "Number of coming months", "fc_inc": "Expected monthly income", "fc_exp": "Expected monthly expenses", "fc_tinc": "Expected total income", "fc_texp": "Expected total expenses", "fc_net": "Expected total savings", "fc_end": "Expected balance", "fc_show": "Show forecast on the home screen", "fc_incl": "Include forecast net in the displayed balance (estimate only)", "fc_note": "These are estimates; they are not recorded as real transactions and do not change account balances.", "g_left": "Remaining to reach the goal", "g_ok": "Goal reached", "ch_title": "Expected balance over time", "st_cur": "Currency", "st_curd": "Display currency", "st_lang": "Language", "st_langd": "App interface language", "st_priv": "Privacy", "st_privd": "Your data is stored locally on this device.", "st_local": "● Local", "st_cloud": "● Connected to cloud"};
+Object.assign(T.ar,{"fc_sel": "إضافة صافي هذا الشهر إلى الرصيد المتوقع", "fc_selt": "صافي الأشهر المحددة"});
+Object.assign(T.de,{"fc_sel": "Netto dieses Monats zum erwarteten Stand addieren", "fc_selt": "Netto der gewählten Monate"});
+Object.assign(T.en,{"fc_sel": "Add this month's net to the expected balance", "fc_selt": "Net of selected months"});
+Object.assign(T.ar,{"sub": "إدارة أموالك بتوازن", "fc_sel": "إضافة صافي الشهر المحدد إلى الرصيد المتوقع", "up_title": "تحديث التطبيق", "up_desc": "يتحقق التطبيق تلقائيًا من وجود تحديث عند الفتح، ويُطبَّق دون حذف التطبيق أو فقدان بياناتك.", "up_ver": "رقم الإصدار الحالي", "up_check": "التحقق من التحديث الآن", "up_new": "يتوفر تحديث جديد", "up_now": "تحديث الآن", "up_latest": "أنت على أحدث إصدار", "up_err": "تعذّر الاتصال بخادم التحديث", "up_bad": "ملف التحديث غير صالح", "up_nourl": "أدخل رابط التحديث أولًا"});
+Object.assign(T.de,{"sub": "Verwalte dein Geld im Gleichgewicht", "fc_sel": "Netto des gewählten Monats zum erwarteten Stand addieren", "up_title": "App-Update", "up_desc": "Die App prüft beim Öffnen automatisch auf Updates. Sie werden ohne Neuinstallation und ohne Datenverlust übernommen.", "up_ver": "Aktuelle Version", "up_check": "Jetzt nach Update suchen", "up_new": "Neues Update verfügbar", "up_now": "Jetzt aktualisieren", "up_latest": "Du hast die neueste Version", "up_err": "Update-Server nicht erreichbar", "up_bad": "Update-Datei ungültig", "up_nourl": "Bitte zuerst die Update-URL eingeben"});
+Object.assign(T.en,{"sub": "Manage your money in balance", "fc_sel": "Add the selected month's net to the expected balance", "up_title": "App update", "up_desc": "The app checks for updates automatically when opened. Updates apply without reinstalling and without losing your data.", "up_ver": "Current version", "up_check": "Check for update now", "up_new": "A new update is available", "up_now": "Update now", "up_latest": "You have the latest version", "up_err": "Could not reach the update server", "up_bad": "Invalid update file", "up_nourl": "Enter the update URL first"});
+function pgHead(k){return '<div class="pgh"><h2>'+t('tt_'+k)+'</h2><p>'+t('td_'+k)+'</p></div>'}
+
+/* ---- Forecast of the coming months (lives in the log tab, feeds the home tiles) ---- */
+function fcGet(){var f=S.fc||{};return{months:Math.max(1,Math.round(num(f.months)||4)),inc:(f.inc===undefined||f.inc==='')?incPlan():num(f.inc),exp:(f.exp===undefined||f.exp==='')?expPlan():num(f.exp),show:!!f.show,incl:f.incl!==false}}
+function fcSelHas(k){var s=(S.fc&&S.fc.sel)||{};return s[k]===undefined?k===cm:!!s[k]}
+function fcSelKeys(){var s=(S.fc&&S.fc.sel)||{},lk=linked()?linkKeys():[],c={};Object.keys(s).forEach(function(k){c[k]=1});c[cm]=1;return Object.keys(c).filter(function(k){var m=S.log[k];return fcSelHas(k)&&m&&(m.income.length||m.expense.length)&&lk.indexOf(k)<0}).sort()}
+function fcSelNet(){return fcSelKeys().reduce(function(a,k){var m=S.log[k];return a+sum(m.income)-sum(m.expense)},0)}
+function fcCalc(){var f=fcGet(),now=sum(S.assets)+linkNet(),net=(f.inc-f.exp)*f.months,sel=fcSelNet();return{months:f.months,inc:f.inc,exp:f.exp,incT:f.inc*f.months,expT:f.exp*f.months,net:net,now:now,sel:sel,selN:fcSelKeys().length,base:now+(f.incl?net:0),end:now+sel+(f.incl?net:0),show:f.show,incl:f.incl}}
+function fcUi(){var c=fcCalc();$('fcTInc').textContent=fmt(c.incT);$('fcTExp').textContent=fmt(c.expT);$('fcNet').textContent=fmt(c.net);$('fcEnd').textContent=fmt(c.end);$('fcSel').textContent=fmt(c.sel);var sm=$('fcSelM'),sl=$('fcSelL');if(sm){sm.checked=fcSelHas(cm);var mm=S.log[cm]||{income:[],expense:[]};sl.textContent=t('fc_sel')+' ('+mlabel(cm)+': '+fmt(sum(mm.income)-sum(mm.expense))+')'}}
+function fcSync(){var f=fcGet();$('fcM').value=String(f.months);$('fcInc').value=f.inc||'';$('fcExp').value=f.exp||'';$('fcShow').checked=f.show;$('fcIncl').checked=f.incl;fcUi()}
+
+/* ---- Plan tab: goal progress + balance chart ---- */
+function goalBar(pl){
+  var w=$('gwrap'),b=$('gbar'),tx=$('gtxt');if(!w)return;var g=num(S.goal);
+  if(g>0){var p=Math.max(0,Math.min(100,pl.end/g*100));w.hidden=false;b.style.width=p+'%';tx.textContent=(pl.end>=g?t('g_ok'):t('g_left')+': '+fmt(g-pl.end))+' ('+Math.round(p)+'%)'}
+  else{w.hidden=true;tx.textContent=''}}
+function chartRender(pl,inc){
+  var el=$('chart');if(!el)return;
+  var pts=[];pl.rows.forEach(function(r){if(r.type==='sal')pts.push([r.d.getTime(),r.bal-inc]);pts.push([r.d.getTime(),r.bal])});
+  if(pts.length<2){el.innerHTML='';return}
+  var x0=pts[0][0],x1=pts[pts.length-1][0],ys=pts.map(function(p){return p[1]}),mn=Math.min.apply(null,ys.concat([0])),mx=Math.max.apply(null,ys);if(mx<=mn)mx=mn+1;
+  var W=600,H=230,L=12,R=12,T0=14,B=30,px=function(x){return L+(x-x0)/((x1-x0)||1)*(W-L-R)},py=function(y){return T0+(1-(y-mn)/(mx-mn))*(H-T0-B)};
+  var line=pts.map(function(p,i){return (i?'L':'M')+px(p[0]).toFixed(1)+' '+py(p[1]).toFixed(1)}).join(' ');
+  var area=line+' L'+px(x1).toFixed(1)+' '+(H-B)+' L'+px(x0).toFixed(1)+' '+(H-B)+' Z';
+  var grid=[0,1,2,3].map(function(i){var y=T0+i*(H-T0-B)/3;return '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'" style="stroke:var(--line)" stroke-width="1"/>'}).join('');
+  var g=num(S.goal),gl=(g>mn&&g<mx)?'<line x1="'+L+'" x2="'+(W-R)+'" y1="'+py(g).toFixed(1)+'" y2="'+py(g).toFixed(1)+'" stroke="#d9822b" stroke-dasharray="6 5" stroke-width="2"/>':'';
+  el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" style="direction:ltr;width:100%;display:block" role="img">'+grid+gl+'<path d="'+area+'" fill="rgba(31,157,108,.16)"/><path d="'+line+'" fill="none" stroke="#1f9d6c" stroke-width="3" stroke-linejoin="round"/>'+
+   '<text x="'+L+'" y="'+(H-8)+'" font-size="12" style="fill:var(--muted)">'+fdate(pl.rows[0].d)+'</text><text x="'+(W-R)+'" y="'+(H-8)+'" text-anchor="end" font-size="12" style="fill:var(--muted)">'+fdate(pl.rows[pl.rows.length-1].d)+'</text></svg>'}
+
+/* ---- Log: add an income/expense entry from the add-row ---- */
+function addEntry(k){
+  var am=num($('aamt-'+k).value),c=$('asel-'+k).value,nn=($('aname-'+k).value||'').trim();
+  if(!c){mzToast(t(k==='income'?'sel_inc':'sel_exp'));return}
+  if(c==='custom'&&!nn){$('aname-'+k).hidden=false;$('aname-'+k).focus();return}
+  if(!(am>0)){mzToast(t('m_noamt'));return}
+  var m=getM();if(S.filled&&S.filled[cm]){delete S.filled[cm];$('lfill').hidden=true}
+  var o={c:c,v:am};if(c==='custom')o.n=nn;m[k].push(o);save();
+  $('aamt-'+k).value='';$('asel-'+k).value='';$('aname-'+k).value='';$('aname-'+k).hidden=true;
+  lrows(k);lcalc()}
+
+document.addEventListener('click',function(e){
+  var b=e.target.closest?e.target.closest('[data-lnew],#fcCopy'):null;if(!b)return;
+  if(b.dataset.lnew)addEntry(b.dataset.lnew);
+  else if(b.id==='fcCopy'){var m=S.log[cm]||{income:[],expense:[]};S.fc=S.fc||{};S.fc.inc=sum(m.income);S.fc.exp=sum(m.expense);save();fcSync()}
+});
+document.addEventListener('input',function(e){
+  var x=e.target;
+  if(x.id==='fcInc'||x.id==='fcExp'){S.fc=S.fc||{};S.fc[x.id==='fcInc'?'inc':'exp']=x.value;save();fcUi()}
+});
+document.addEventListener('change',function(e){
+  var x=e.target;
+  if(x.id==='fcM'){S.fc=S.fc||{};S.fc.months=num(x.value);save();fcUi()}
+  else if(x.id==='fcSelM'){S.fc=S.fc||{};S.fc.sel=S.fc.sel||{};S.fc.sel[cm]=!!x.checked;save();fcUi();lhist()}
+  else if(x.id==='fcShow'||x.id==='fcIncl'){S.fc=S.fc||{};S.fc[x.id==='fcShow'?'show':'incl']=x.checked;save();fcUi()}
+  else if(x.id&&x.id.indexOf('asel-')===0){var k=x.id.slice(5);$('aname-'+k).hidden=x.value!=='custom';if(x.value==='custom')$('aname-'+k).placeholder=t(k==='income'?'ph_income':'ph_expense')}
+  else if(x.id==='mzCur'){S.cur=x.value;try{$('cur').value=S.cur}catch(er){}save();applyLang()}
+  else if(x.id==='mzLang'){S.lang=(['de','en'].indexOf(x.value)>=0?x.value:'ar');save();applyLang()}
+});
+
+window.onNativeResume=function(){pullNative();refreshAll();updCheck(false)};
+natCall('setKeywords',[JSON.stringify(S.kw)]);
+pullNative();
+
+/* ---- online updater ---- */
+function updUrl(){var u='';try{u=localStorage.getItem('mz_up_url')||''}catch(e){}return u||window.__mzDef||''}
+function updBanner(){if($('mzUpd'))return;var d=document.createElement('div');d.id='mzUpd';d.style.cssText='position:fixed;left:12px;right:12px;bottom:14px;z-index:9999;background:#0f7b5f;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.25)';
+  var s=document.createElement('span');s.textContent=t('up_new');var b=document.createElement('button');b.textContent=t('up_now');b.style.cssText='border:0;border-radius:10px;padding:8px 14px;font:inherit;font-weight:800;background:#fff;color:#0f7b5f;cursor:pointer';b.onclick=function(){location.reload()};d.appendChild(s);d.appendChild(b);document.body.appendChild(d)}
+function updCheck(manual){
+  var u=updUrl();if(!u){if(manual)mzToast(t('up_nourl'));return}
+  try{fetch(u+(u.indexOf('?')<0?'?':'&')+'t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('http');return r.text()}).then(function(html){
+    var m=html.match(/name="mz-version"\s+content="(\d+)"/),v=m?parseInt(m[1],10):0;
+    if(!v||html.indexOf('</html>')<0){if(manual)mzToast(t('up_bad'));return}
+    if(v>(window.__mzCur||1)){try{localStorage.setItem('mz_up_html',html);localStorage.setItem('mz_up_ver',String(v))}catch(e){if(manual)mzToast(t('up_err'));return}updBanner()}
+    else if(manual)mzToast(t('up_latest'))
+  }).catch(function(){if(manual)mzToast(t('up_err'))})}catch(e){if(manual)mzToast(t('up_err'))}}
+document.addEventListener('input',function(e){if(e.target.id==='mzUpUrl'){try{localStorage.setItem('mz_up_url',e.target.value.trim())}catch(x){}}});
+setTimeout(function(){updCheck(false)},2500);
+try{localStorage.removeItem('mz_up_try')}catch(e){}
+
+init();
+})();
+</script>
+</body>
+</html>
